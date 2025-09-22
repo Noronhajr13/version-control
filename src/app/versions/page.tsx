@@ -1,33 +1,25 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import { createClient } from '@/src/lib/supabase/client'
+import Link from 'next/link'
+import { Plus, Eye, Edit } from 'lucide-react'
+
+// Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import { createBrowserClient } from '@supabase/ssr'
-import { Database } from '@/src/lib/types/database'
-import Link from 'next/link'
-import { Plus, Eye, Edit, Trash2 } from 'lucide-react'
-import { useState, useEffect } from 'react'
-
-// Utility function para contornar problemas de tipo do Supabase
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const supabaseOperation = (operation: any) => operation
-
 export default function VersionsPage() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [versions, setVersions] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const supabase = createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  const supabase = createClient()
 
   useEffect(() => {
     const loadVersions = async () => {
       try {
-        const { data, error } = await supabaseOperation(supabase
-          .from('versions'))
+        const { data, error } = await supabase
+          .from('versions')
           .select(`
             *,
             modules (name)
@@ -47,7 +39,7 @@ export default function VersionsPage() {
     }
 
     loadVersions()
-  }, [])
+  }, [supabase])
 
   return (
     <div>

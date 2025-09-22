@@ -1,6 +1,9 @@
-import { createServerSupabaseClient } from '@/src/lib/supabase/server'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/src/lib/supabase/client'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { ArrowLeft, Edit, ExternalLink, Calendar, Package, Users, FileCode, GitBranch } from 'lucide-react'
 
 import type { Database } from '@/src/lib/types/database'
@@ -10,27 +13,75 @@ type VersionWithRelations = Database['public']['Tables']['versions']['Row'] & {
   version_clients?: (Database['public']['Tables']['version_clients']['Row'] & { clients?: { name: string; uf: string } })[]
 }
 
-export default async function VersionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const supabase = await createServerSupabaseClient()
-  // Buscar versão com todas as relações
-  const { data, error } = await supabase
-    .from('versions')
-    .select(`
-      *,
-      modules (name),
-      cards (*),
-      version_clients (
-        *,
-        clients (name, uf)
-      )
-    `)
-    .eq('id', id)
-    .single<VersionWithRelations>()
+export default function VersionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const [version, setVersion] = useState<VersionWithRelations | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [versionId, setVersionId] = useState('')
+  const router = useRouter()
+  const supabase = createClient()
 
-  const version = data
+  // Inicializar parâmetros
+  useEffect(() => {
+    const initializeParams = async () => {
+      const { id } = await params
+      setVersionId(id)
+    }
+    initializeParams()
+  }, [params])
+
+  // Carregar dados da versão
+  useEffect(() => {
+    if (!versionId) return
+
+    const loadVersion = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('versions')
+          .select(`
+            *,
+            modules (name),
+            cards (*),
+            version_clients (
+              *,
+              clients (name, uf)
+            )
+          `)
+          .eq('id', versionId)
+          .single<VersionWithRelations>()
+
+        if (error || !data) {
+          setError('Versão não encontrada')
+          router.push('/versions')
+          return
+        }
+
+        setVersion(data)
+      } catch (err) {
+        setError('Erro ao carregar versão')
+        router.push('/versions')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadVersion()
+  }, [versionId, supabase, router])
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-gray-500 dark:text-gray-400">Carregando...</div>
+      </div>
+    )
+  }
+
   if (error || !version) {
-    notFound()
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-red-500">{error || 'Versão não encontrada'}</div>
+      </div>
+    )
   }
 
   return (
@@ -54,7 +105,7 @@ export default async function VersionDetailsPage({ params }: { params: Promise<{
         </div>
         
         <Link
-          href={`/versions/${id}/edit`}
+          href={`/versions/${versionId}/edit`}
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
           <Edit className="w-4 h-4 mr-2" />
