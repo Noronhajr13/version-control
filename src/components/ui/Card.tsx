@@ -47,6 +47,35 @@ export function CardBody({ className, children }: CardBodyProps) {
   )
 }
 
+// Alias para compatibilidade
+export const CardContent = CardBody
+
+interface CardTitleProps {
+  className?: string
+  children: React.ReactNode
+}
+
+export function CardTitle({ className, children }: CardTitleProps) {
+  return (
+    <h3 className={cn('text-lg font-semibold text-gray-900 dark:text-white', className)}>
+      {children}
+    </h3>
+  )
+}
+
+interface CardDescriptionProps {
+  className?: string
+  children: React.ReactNode
+}
+
+export function CardDescription({ className, children }: CardDescriptionProps) {
+  return (
+    <p className={cn('text-sm text-gray-600 dark:text-gray-400 mt-1', className)}>
+      {children}
+    </p>
+  )
+}
+
 interface CardFooterProps {
   className?: string
   children: React.ReactNode

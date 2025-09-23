@@ -8,6 +8,7 @@ import {
   GitBranch, 
   FileText, 
   Home,
+  Clock,
   LogOut
 } from 'lucide-react'
 import { createClient } from '@/src/lib/supabase/client'
@@ -19,6 +20,7 @@ const menuItems = [
   { href: '/dashboard/clients', label: 'Clientes', icon: Users },
   { href: '/dashboard/versions', label: 'Versões', icon: GitBranch },
   { href: '/dashboard/reports', label: 'Relatórios', icon: FileText },
+  { href: '/dashboard/audit', label: 'Auditoria', icon: Clock },
 ]
 
 export function Sidebar() {

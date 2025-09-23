@@ -116,6 +116,131 @@ export interface Database {
           client_id?: string
         }
       }
+      audit_logs: {
+        Row: {
+          id: string
+          table_name: string
+          operation_type: 'INSERT' | 'UPDATE' | 'DELETE'
+          record_id: string
+          old_values: Record<string, any> | null
+          new_values: Record<string, any> | null
+          changed_fields: string[]
+          user_id: string | null
+          user_email: string | null
+          user_agent: string | null
+          ip_address: string | null
+          timestamp: string
+          session_id: string | null
+          request_id: string | null
+          description: string | null
+          tags: string[] | null
+        }
+        Insert: {
+          id?: string
+          table_name: string
+          operation_type: 'INSERT' | 'UPDATE' | 'DELETE'
+          record_id: string
+          old_values?: Record<string, any> | null
+          new_values?: Record<string, any> | null
+          changed_fields?: string[]
+          user_id?: string | null
+          user_email?: string | null
+          user_agent?: string | null
+          ip_address?: string | null
+          timestamp?: string
+          session_id?: string | null
+          request_id?: string | null
+          description?: string | null
+          tags?: string[] | null
+        }
+        Update: {
+          id?: string
+          table_name?: string
+          operation_type?: 'INSERT' | 'UPDATE' | 'DELETE'
+          record_id?: string
+          old_values?: Record<string, any> | null
+          new_values?: Record<string, any> | null
+          changed_fields?: string[]
+          user_id?: string | null
+          user_email?: string | null
+          user_agent?: string | null
+          ip_address?: string | null
+          timestamp?: string
+          session_id?: string | null
+          request_id?: string | null
+          description?: string | null
+          tags?: string[] | null
+        }
+      }
+    }
+    Views: {
+      audit_logs_with_user_info: {
+        Row: {
+          id: string
+          table_name: string
+          operation_type: 'INSERT' | 'UPDATE' | 'DELETE'
+          record_id: string
+          old_values: Record<string, any> | null
+          new_values: Record<string, any> | null
+          changed_fields: string[]
+          user_id: string | null
+          user_email: string | null
+          user_agent: string | null
+          ip_address: string | null
+          timestamp: string
+          session_id: string | null
+          request_id: string | null
+          description: string | null
+          tags: string[] | null
+          user_display_email: string | null
+          user_created_at: string | null
+        }
+      }
+      audit_summary_by_table: {
+        Row: {
+          table_name: string
+          operation_type: 'INSERT' | 'UPDATE' | 'DELETE'
+          operation_count: number
+          unique_users: number
+          first_operation: string
+          last_operation: string
+        }
+      }
+      recent_audit_activity: {
+        Row: {
+          id: string
+          table_name: string
+          operation_type: 'INSERT' | 'UPDATE' | 'DELETE'
+          record_id: string
+          old_values: Record<string, any> | null
+          new_values: Record<string, any> | null
+          changed_fields: string[]
+          user_id: string | null
+          user_email: string | null
+          user_agent: string | null
+          ip_address: string | null
+          timestamp: string
+          session_id: string | null
+          request_id: string | null
+          description: string | null
+          tags: string[] | null
+          user_display_email: string | null
+        }
+      }
+    }
+    Functions: {
+      get_audit_stats: {
+        Returns: {
+          total_logs: number
+          logs_last_7_days: number
+          logs_last_30_days: number
+          most_active_table: string
+          most_active_user: string
+        }[]
+      }
+      cleanup_old_audit_logs: {
+        Returns: number
+      }
     }
   }
 }
