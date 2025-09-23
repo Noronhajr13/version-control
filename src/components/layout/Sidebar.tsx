@@ -15,10 +15,10 @@ import { useRouter } from 'next/navigation'
 
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/modules', label: 'Módulos', icon: Package },
-  { href: '/clients', label: 'Clientes', icon: Users },
-  { href: '/versions', label: 'Versões', icon: GitBranch },
-  { href: '/reports', label: 'Relatórios', icon: FileText },
+  { href: '/dashboard/modules', label: 'Módulos', icon: Package },
+  { href: '/dashboard/clients', label: 'Clientes', icon: Users },
+  { href: '/dashboard/versions', label: 'Versões', icon: GitBranch },
+  { href: '/dashboard/reports', label: 'Relatórios', icon: FileText },
 ]
 
 export function Sidebar() {

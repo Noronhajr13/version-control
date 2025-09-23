@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './global.css'
 import { Toaster } from 'sonner'
+import QueryProvider from '../lib/react-query/QueryProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,8 +19,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={inter.className}>
-        {children}
-        <Toaster position="top-right" />
+        <QueryProvider>
+          {children}
+          <Toaster position="top-right" />
+        </QueryProvider>
       </body>
     </html>
   )
