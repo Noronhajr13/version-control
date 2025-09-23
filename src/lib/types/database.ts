@@ -47,7 +47,9 @@ export interface Database {
           themes_folder: string | null
           version_number: string
           release_date: string | null
-          script_executed: string | null
+          scripts: string | null
+          powerbuilder_version: string | null
+          exe_path: string | null
           created_at: string
         }
         Insert: {
@@ -58,7 +60,9 @@ export interface Database {
           themes_folder?: string | null
           version_number: string
           release_date?: string | null
-          script_executed?: string | null
+          scripts?: string | null
+          powerbuilder_version?: string | null
+          exe_path?: string | null
           created_at?: string
         }
         Update: {
@@ -69,7 +73,9 @@ export interface Database {
           themes_folder?: string | null
           version_number?: string
           release_date?: string | null
-          script_executed?: string | null
+          scripts?: string | null
+          powerbuilder_version?: string | null
+          exe_path?: string | null
           created_at?: string
         }
       }

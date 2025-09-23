@@ -36,7 +36,9 @@ export function NewVersionForm() {
     themes_folder: '',
     version_number: '',
     release_date: '',
-    script_executed: ''
+    scripts: '',
+    powerbuilder_version: '',
+    exe_path: ''
   })
   
   const [isLoading, setIsLoading] = useState(false)
@@ -239,18 +241,51 @@ export function NewVersionForm() {
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Versão PowerBuilder
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: 2022 R3 Build 3356"
+                value={formData.powerbuilder_version}
+                onChange={(e) => setFormData({ ...formData, powerbuilder_version: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Caminho do EXE
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: C:\Program Files\App\app.exe"
+                value={formData.exe_path}
+                onChange={(e) => setFormData({ ...formData, exe_path: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              />
+            </div>
           </div>
 
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Script Executado
+              Scripts
             </label>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+              💡 Adicione múltiplos caminhos de scripts, um por linha (similar aos cards Jira)
+            </div>
             <textarea
-              rows={4}
-              placeholder="Scripts SQL executados nesta versão..."
-              value={formData.script_executed}
-              onChange={(e) => setFormData({ ...formData, script_executed: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              rows={6}
+              placeholder={`Exemplo:
+/scripts/database/001_create_tables.sql
+/scripts/database/002_insert_data.sql
+/scripts/migration/003_update_schema.sql
+/scripts/patches/004_fix_bug.sql`}
+              value={formData.scripts}
+              onChange={(e) => setFormData({ ...formData, scripts: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white font-mono text-sm"
             />
           </div>
         </div>

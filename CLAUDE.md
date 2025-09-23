@@ -3,20 +3,19 @@
 **SESSÃO ATIVA - DESENVOLVIMENTO EM ANDAMENTO** 🚀
 
 **✅ ÚLTIMA CONQUISTA CONCLUÍDA:**
-- **Fase 4 - Melhorias de UX**: IMPLEMENTADAS COM SUCESSO
-- **Git Commit**: Preparando commit com bulk operations e UX enhancements
-- **Status**: Build passing (5.8s) with UX improvements
-- **Build**: Versions page now 3.6kB (enhanced with bulk operations)
+- **Novos Campos de Versão**: IMPLEMENTADOS COM SUCESSO
+- **Migração DB**: Executada e validada ✅
+- **Status**: Build passing (5.4s) com novos campos funcionais
+- **Build**: Sistema completo com PowerBuilder version, EXE path e scripts multi-linha
 
-**✅ FASE 4 MELHORIAS DE UX - IMPLEMENTADAS:**
-- ✅ **Bulk Operations**: Seleção múltipla com checkboxes e actions bar
-- ✅ **Keyboard Shortcuts**: Sistema completo com atalhos customizáveis  
-- ✅ **Quick Actions**: Paleta de comandos com Ctrl+K
-- ✅ **Search & Filter**: Busca em tempo real em todas as tabelas
-- ✅ **Custom Toasts**: Notificações inteligentes com feedback visual
-- ✅ **Loading States**: Progress bars e feedback de operações bulk
-- ✅ **Drag & Drop**: Componente para reorganização de itens
-- ✅ **Animations**: Sistema de transições suaves e animaçõesSempre responda em português;
+**✅ NOVOS CAMPOS DE VERSÃO - IMPLEMENTADOS:**
+- ✅ **Campo PowerBuilder Version**: Input text para versão PB (ex: 2022 R3 Build 3356)
+- ✅ **Campo Caminho do EXE**: Input text para path do executável
+- ✅ **Scripts Multi-linha**: Textarea expandido (6 linhas) para múltiplos scripts
+- ✅ **Coluna PowerBuilder**: Badge azul na listagem de versões
+- ✅ **Migração Banco**: script_executed → scripts + novos campos
+- ✅ **Visualização**: Formatação melhorada para novos campos
+- ✅ **Edição**: Formulários atualizados com backward compatibilitySempre responda em português;
 - Sempre buildar após mudanças e pedir minha autorização pra tudo!
 
 ### 🚨 **ESTADO DA SESSÃO - 23/09/2025**
@@ -38,10 +37,11 @@
 **🎯 PRÓXIMAS OPÇÕES DISPONÍVEIS:**
 1. **✅ Fase 3 Concluída**: Dashboard Avançado implementado
 2. **✅ Fase 4 Concluída**: Melhorias de UX implementadas
-3. **Sistema de Auditoria**: Logs de alterações, histórico
-4. **Integrações Externas**: APIs, Webhooks, Git sync
-5. **Export de Dados**: CSV, PDF, Excel dos relatórios
-6. **PWA Features**: Offline support, notifications
+3. **✅ Novos Campos Concluída**: PowerBuilder + EXE Path + Scripts
+4. **Sistema de Auditoria**: Logs de alterações, histórico
+5. **Integrações Externas**: APIs, Webhooks, Git sync
+6. **Export de Dados**: CSV, PDF, Excel dos relatórios
+7. **PWA Features**: Offline support, notifications
 
 **📊 CONTEXTO DA SESSÃO:**
 - Performance optimization 100% implementada
@@ -54,6 +54,7 @@
 - ✅ **Deploy em produção funcionando** (Vercel)
 - ✅ **Dashboard Avançado implementado** (Gráficos Recharts + Métricas)
 - ✅ **UX Melhorias implementadas** (Bulk ops + Shortcuts + Quick Actions)
+- ✅ **Novos Campos de Versão implementados** (PowerBuilder + EXE + Scripts)
 
 ---
 
@@ -245,20 +246,14 @@
 - ✅ Versões recentes com navegação
 - ✅ Suporte completo dark/light theme
 
-**✅ Melhorias de UX (IMPLEMENTADO)**:
-- ✅ **Bulk Operations**: Seleção múltipla com actions bar
-- ✅ **Keyboard Shortcuts**: 
-  - Ctrl+K: Quick Actions palette
-  - Ctrl+N: Nova versão/módulo
-  - Ctrl+A: Selecionar todos
-  - Ctrl+F: Buscar
-  - Delete: Deletar selecionados
-- ✅ **Quick Actions**: Paleta de comandos estilo VS Code
-- ✅ **Search & Filter**: Busca em tempo real
-- ✅ **Custom Toasts**: Notificações com emoji e feedback
-- ✅ **Loading States**: Progress bars para bulk operations
-- ✅ **Drag & Drop**: Reorganização de itens
-- ✅ **Animations**: Transições suaves FadeIn/SlideIn/ScaleIn
+**✅ Novos Campos de Versão (IMPLEMENTADO)**:
+- ✅ **PowerBuilder Version**: Campo para versão PB utilizada
+- ✅ **Caminho do EXE**: Path completo do executável
+- ✅ **Scripts Multi-linha**: Suporte múltiplos scripts (estilo Jira)
+- ✅ **Migração Banco**: script_executed renomeado para scripts
+- ✅ **UI Atualizada**: Coluna PowerBuilder com badge azul
+- ✅ **Formulários**: Criação e edição com novos campos
+- ✅ **Visualização**: Detalhes formatados adequadamente
 
 **Sistema de Auditoria**:
 - Log de todas as alterações

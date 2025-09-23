@@ -178,21 +178,44 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
                   )}
                 </dd>
               </div>
+
+              <div>
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Versão PowerBuilder</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                  {(version as any).powerbuilder_version || <span className="text-gray-400">Não especificada</span>}
+                </dd>
+              </div>
+
+              <div>
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Caminho do EXE</dt>
+                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                  {(version as any).exe_path ? (
+                    <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs">
+                      {(version as any).exe_path}
+                    </code>
+                  ) : (
+                    <span className="text-gray-400">Não especificado</span>
+                  )}
+                </dd>
+              </div>
             </dl>
           </div>
 
-          {/* Script Executado */}
-          {version.script_executed && (
+          {/* Scripts */}
+          {((version as any).scripts || (version as any).script_executed) && (
             <div className="bg-white dark:bg-gray-900 shadow rounded-lg p-6">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                 <FileCode className="w-5 h-5 mr-2 text-purple-600" />
-                Script Executado
+                Scripts
               </h2>
-              <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md overflow-x-auto">
-                <code className="text-sm text-gray-800 dark:text-gray-200">
-                  {version.script_executed}
-                </code>
-              </pre>
+              <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
+                <pre className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                  {(version as any).scripts || (version as any).script_executed}
+                </pre>
+              </div>
+              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                💡 Cada linha representa um script executado nesta versão
+              </div>
             </div>
           )}
 

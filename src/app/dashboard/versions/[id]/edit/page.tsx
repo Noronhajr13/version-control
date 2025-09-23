@@ -32,7 +32,9 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     themes_folder: string
     version_number: string
     release_date: string
-    script_executed: string
+    scripts: string
+    powerbuilder_version: string
+    exe_path: string
   }>({
     module_id: '',
     tag: '',
@@ -40,7 +42,9 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     themes_folder: '',
     version_number: '',
     release_date: '',
-    script_executed: ''
+    scripts: '',
+    powerbuilder_version: '',
+    exe_path: ''
   })
   
   const [isLoading, setIsLoading] = useState(false)
@@ -102,7 +106,9 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
         themes_folder: versionData.themes_folder ?? '',
         version_number: versionData.version_number,
         release_date: versionData.release_date ?? '',
-        script_executed: versionData.script_executed ?? ''
+        scripts: (versionData as any).scripts ?? (versionData as any).script_executed ?? '',
+        powerbuilder_version: (versionData as any).powerbuilder_version ?? '',
+        exe_path: (versionData as any).exe_path ?? ''
       })
 
       // Preencher cards
@@ -345,18 +351,51 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Versão PowerBuilder
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: 2022 R3 Build 3356"
+                value={formData.powerbuilder_version}
+                onChange={(e) => setFormData({ ...formData, powerbuilder_version: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Caminho do EXE
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: C:\Program Files\App\app.exe"
+                value={formData.exe_path}
+                onChange={(e) => setFormData({ ...formData, exe_path: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              />
+            </div>
           </div>
 
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Script Executado
+              Scripts
             </label>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+              💡 Adicione múltiplos caminhos de scripts, um por linha (similar aos cards Jira)
+            </div>
             <textarea
-              rows={4}
-              placeholder="Scripts SQL executados nesta versão..."
-              value={formData.script_executed}
-              onChange={(e) => setFormData({ ...formData, script_executed: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              rows={6}
+              placeholder={`Exemplo:
+/scripts/database/001_create_tables.sql
+/scripts/database/002_insert_data.sql
+/scripts/migration/003_update_schema.sql
+/scripts/patches/004_fix_bug.sql`}
+              value={formData.scripts}
+              onChange={(e) => setFormData({ ...formData, scripts: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white font-mono text-sm"
             />
           </div>
         </div>
