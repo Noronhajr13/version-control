@@ -6,6 +6,8 @@ import { createClient } from '@/src/lib/supabase/client'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { Plus, Trash2 } from '@/src/components/ui/icons'
+import { useCreateVersion } from '@/src/lib/react-query/hooks/useVersions'
+import { useQueryClient } from '@tanstack/react-query'
 
 // Utility function para contornar problemas de tipo do Supabase
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,6 +42,8 @@ export function NewVersionForm() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+  const queryClient = useQueryClient()
+  const createVersionMutation = useCreateVersion()
 
   useEffect(() => {
     loadData()
@@ -124,8 +128,13 @@ export function NewVersionForm() {
       }
 
       toast.success('Versão criada com sucesso')
+      
+      // Invalidar cache do React Query para recarregar dados
+      queryClient.invalidateQueries({ queryKey: ['versions'] })
+      queryClient.invalidateQueries({ queryKey: ['modules'] })
+      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      
       router.push('/dashboard/versions')
-      router.refresh()
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error('Erro ao criar versão: ' + error.message)

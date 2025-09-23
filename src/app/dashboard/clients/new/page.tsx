@@ -6,6 +6,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import type { Database } from '@/src/lib/types/database'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { useQueryClient } from '@tanstack/react-query'
 
 const UF_LIST = [
   'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
@@ -18,6 +19,7 @@ export default function NewClientPage() {
   const [uf, setUf] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const queryClient = useQueryClient()
   const supabase = createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -38,8 +40,11 @@ export default function NewClientPage() {
       setIsLoading(false)
     } else {
       toast.success('Cliente criado com sucesso')
+      
+      // Invalidar cache do React Query para recarregar dados
+      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      
       router.push('/dashboard/clients')
-      router.refresh()
     }
   }
 

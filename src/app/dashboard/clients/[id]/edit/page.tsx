@@ -7,6 +7,7 @@ import type { Database } from '@/src/lib/types/database'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 
 const UF_LIST = [
   'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
@@ -20,6 +21,7 @@ export default function EditClientPage({ params }: { params: Promise<{ id: strin
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [clientId, setClientId] = useState('')
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const supabase = createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -74,8 +76,12 @@ export default function EditClientPage({ params }: { params: Promise<{ id: strin
       setIsLoading(false)
     } else {
       toast.success('Cliente atualizado com sucesso')
+      
+      // Invalidar cache do React Query para recarregar dados
+      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      queryClient.invalidateQueries({ queryKey: ['client', clientId] })
+      
       router.push('/dashboard/clients')
-      router.refresh()
     }
   }
 

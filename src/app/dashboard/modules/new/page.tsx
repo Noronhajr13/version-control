@@ -6,11 +6,13 @@ import { createBrowserClient } from '@supabase/ssr'
 import type { Database } from '@/src/lib/types/database'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function NewModulePage() {
   const [name, setName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const queryClient = useQueryClient()
   const supabase = createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -31,8 +33,11 @@ export default function NewModulePage() {
       setIsLoading(false)
     } else {
       toast.success('Módulo criado com sucesso')
+      
+      // Invalidar cache do React Query para recarregar dados
+      queryClient.invalidateQueries({ queryKey: ['modules'] })
+      
       router.push('/dashboard/modules')
-      router.refresh()
     }
   }
 

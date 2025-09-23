@@ -19,11 +19,16 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
+        // Usar URL do production no Vercel ou localhost em desenvolvimento
+        const redirectUrl = process.env.NODE_ENV === 'production' 
+          ? 'https://version-control-2qpkf4r8p-noronhas-projects-67ae95f6.vercel.app/auth/callback'
+          : `${window.location.origin}/auth/callback`
+          
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            emailRedirectTo: redirectUrl,
           },
         })
         

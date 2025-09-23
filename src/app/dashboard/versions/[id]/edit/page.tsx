@@ -7,6 +7,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { Plus, Trash2, Loader2 } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 
 // Utility function para contornar problemas de tipo do Supabase
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,6 +46,7 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingData, setIsLoadingData] = useState(true)
   const router = useRouter()
+  const queryClient = useQueryClient()
   const supabase = createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -223,8 +225,14 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
       }
 
       toast.success('Versão atualizada com sucesso')
+      
+      // Invalidar cache do React Query para recarregar dados
+      queryClient.invalidateQueries({ queryKey: ['versions'] })
+      queryClient.invalidateQueries({ queryKey: ['version', versionId] })
+      queryClient.invalidateQueries({ queryKey: ['modules'] })
+      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      
       router.push(`/dashboard/versions/${versionId}`)
-      router.refresh()
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error('Erro ao atualizar versão: ' + error.message)
