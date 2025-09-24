@@ -154,13 +154,6 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
               </div>
               
               <div>
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Pasta Themes</dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {version.themes_folder || <span className="text-gray-400">Não especificada</span>}
-                </dd>
-              </div>
-              
-              <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Card Jira Principal</dt>
                 <dd className="mt-1 text-sm">
                   {version.jira_card ? (
@@ -187,12 +180,18 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
               </div>
 
               <div>
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Caminho do EXE</dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Link do EXE (SharePoint)</dt>
+                <dd className="mt-1 text-sm">
                   {(version as any).exe_path ? (
-                    <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs">
+                    <a 
+                      href={(version as any).exe_path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline flex items-center break-all"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-1 flex-shrink-0" />
                       {(version as any).exe_path}
-                    </code>
+                    </a>
                   ) : (
                     <span className="text-gray-400">Não especificado</span>
                   )}

@@ -3,20 +3,19 @@
 **SESSÃO ATIVA - DESENVOLVIMENTO EM ANDAMENTO** 🚀
 
 **✅ ÚLTIMA CONQUISTA CONCLUÍDA:**
-- **Sistema de Auditoria**: IMPLEMENTADO COM SUCESSO
-- **SQL Schema**: Executado e validado ✅
-- **Status**: Build passing (8.8s) com auditoria completa funcionando
-- **Build**: Sistema robusto com tracking automático de todas as alterações
+- **Melhorias UX Nova Versão + Correção Relatórios**: IMPLEMENTADAS COM SUCESSO ✅
+- **Git Commit**: f63e8dd (4 files, +60/-51 lines) 
+- **Status**: Build passing (8.0s) com melhorias implementadas
+- **Deploy**: Vercel auto-deploy ativo com novas funcionalidades
 
-**✅ SISTEMA DE AUDITORIA - IMPLEMENTADO:**
-- ✅ **Tabela Audit Logs**: Schema completo com triggers automáticos
-- ✅ **Dashboard Auditoria**: Estatísticas e métricas em tempo real
-- ✅ **Timeline Visual**: Interface cronológica de todas as alterações
-- ✅ **Filtros Avançados**: Busca por tabela, operação, usuário e período
-- ✅ **Auto-tracking**: Captura automática de INSERT/UPDATE/DELETE
-- ✅ **User Tracking**: Rastreamento completo por usuário autenticado
-- ✅ **Performance**: Índices otimizados e views para consultas rápidas
-- ✅ **RLS Security**: Row Level Security configurado adequadamenteSempre responda em português;
+**✅ MELHORIAS UX E CORREÇÕES - IMPLEMENTADAS:**
+- ✅ **Campo Themes Folder**: Removido completamente (não necessário)
+- ✅ **Caminho EXE**: Alterado para campo URL (links SharePoint)
+- ✅ **Versão PowerBuilder**: Convertido para combobox com 4 opções mockadas
+- ✅ **Relatórios Clientes**: Métrica corrigida - conta clientes únicos com versões
+- ✅ **Formulários Sincronizados**: Nova versão e edição com mesmo padrão
+- ✅ **Schema SQL**: Script de migração criado para remoção de campo
+- ✅ **TypeScript**: Tipos atualizados e build passing sem errosSempre responda em português;
 - Sempre buildar após mudanças e pedir minha autorização pra tudo!
 
 ### 🚨 **ESTADO DA SESSÃO - 23/09/2025**
