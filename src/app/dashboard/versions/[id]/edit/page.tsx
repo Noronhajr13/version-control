@@ -29,7 +29,6 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     module_id: string
     tag: string
     jira_card: string
-    themes_folder: string
     version_number: string
     release_date: string
     scripts: string
@@ -39,13 +38,20 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     module_id: '',
     tag: '',
     jira_card: '',
-    themes_folder: '',
     version_number: '',
     release_date: '',
     scripts: '',
     powerbuilder_version: '',
     exe_path: ''
   })
+
+  // Mock data para versões PowerBuilder
+  const powerbuildervVersions = [
+    '2022 R3 Build 2828',
+    '2022 R3 Build 3356',
+    '2025 Build 3683',
+    '2025 Build 3711'
+  ]
   
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingData, setIsLoadingData] = useState(true)
@@ -103,7 +109,6 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
         module_id: versionData.module_id,
         tag: versionData.tag,
         jira_card: versionData.jira_card ?? '',
-        themes_folder: versionData.themes_folder ?? '',
         version_number: versionData.version_number,
         release_date: versionData.release_date ?? '',
         scripts: (versionData as any).scripts ?? (versionData as any).script_executed ?? '',
@@ -341,37 +346,27 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Pasta Themes
-              </label>
-              <input
-                type="text"
-                placeholder="Ex: /themes/v4"
-                value={formData.themes_folder}
-                onChange={(e) => setFormData({ ...formData, themes_folder: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Versão PowerBuilder
               </label>
-              <input
-                type="text"
-                placeholder="Ex: 2022 R3 Build 3356"
+              <select
                 value={formData.powerbuilder_version}
                 onChange={(e) => setFormData({ ...formData, powerbuilder_version: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-              />
+              >
+                <option value="">Selecione a versão...</option>
+                {powerbuildervVersions.map(version => (
+                  <option key={version} value={version}>{version}</option>
+                ))}
+              </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Caminho do EXE
+                Link do EXE (SharePoint)
               </label>
               <input
-                type="text"
-                placeholder="Ex: C:\Program Files\App\app.exe"
+                type="url"
+                placeholder="Ex: https://sharepoint.com/sites/app/exe/app.exe"
                 value={formData.exe_path}
                 onChange={(e) => setFormData({ ...formData, exe_path: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"

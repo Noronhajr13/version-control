@@ -17,6 +17,7 @@ export function ReportsContent() {
   const [selectedVersion, setSelectedVersion] = useState('')
   const [moduleVersions, setModuleVersions] = useState<ModuleVersion[]>([])
   const [versionClients, setVersionClients] = useState<VersionClient[]>([])
+  const [totalClientsWithVersions, setTotalClientsWithVersions] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   
   const supabase = createClient()
@@ -40,13 +41,24 @@ export function ReportsContent() {
   const loadInitialData = async () => {
     try {
       setIsLoading(true)
-      const [modulesRes, versionsRes] = await Promise.all([
+      const [modulesRes, versionsRes, clientsWithVersionsRes] = await Promise.all([
         supabase.from('modules').select('*').order('name'),
-        supabase.from('versions').select('*, modules(name)').order('created_at', { ascending: false })
+        supabase.from('versions').select('*, modules(name)').order('created_at', { ascending: false }),
+        supabase
+          .from('version_clients')
+          .select('client_id')
+          .then(res => {
+            if (res.data) {
+              const uniqueClients = new Set(res.data.map(item => item.client_id))
+              return uniqueClients.size
+            }
+            return 0
+          })
       ])
 
       if (modulesRes.data) setModules(modulesRes.data)
       if (versionsRes.data) setVersions(versionsRes.data)
+      setTotalClientsWithVersions(clientsWithVersionsRes)
     } catch (error) {
       console.error('Erro ao carregar dados:', error)
     } finally {
@@ -124,7 +136,7 @@ export function ReportsContent() {
                 Clientes com Versões
               </h3>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {versionClients.length}
+                {totalClientsWithVersions}
               </p>
             </div>
           </div>
