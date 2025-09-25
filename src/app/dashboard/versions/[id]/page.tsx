@@ -117,11 +117,17 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
         {/* Informações Principais */}
         <div className="lg:col-span-2 space-y-6">
           {/* Detalhes da Versão */}
-          <div className="bg-white dark:bg-gray-900 shadow rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-              <Package className="w-5 h-5 mr-2 text-blue-600" />
-              Informações da Versão
-            </h2>
+          <div className="bg-white dark:bg-gray-900 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg mr-3">
+                  <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                Informações da Versão
+              </h2>
+            </div>
+            
+            <div className="p-6">
             
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -198,50 +204,104 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
                 </dd>
               </div>
             </dl>
+            </div>
           </div>
 
           {/* Motivo da Versão */}
           {(version as any).description && (
-            <div className="bg-white dark:bg-gray-900 shadow rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                <FileText className="w-5 h-5 mr-2 text-green-600" />
-                Motivo da Versão e Problemas Solucionados
-              </h2>
-              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-md border-l-4 border-green-400">
-                <div className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
-                  {(version as any).description}
-                </div>
+            <div className="bg-white dark:bg-gray-900 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                  <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-lg mr-3">
+                    <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <div className="text-lg">Motivo da Versão</div>
+                    <div className="text-sm font-normal text-gray-600 dark:text-gray-400">
+                      Problemas solucionados e melhorias implementadas
+                    </div>
+                  </div>
+                </h2>
               </div>
-              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                📝 Descrição detalhada do motivo desta versão e problemas que ela soluciona
+              
+              <div className="p-6">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 p-5 rounded-lg border border-blue-200 dark:border-blue-800/30">
+                  <div className="prose prose-sm max-w-none text-gray-800 dark:text-gray-200">
+                    <div className="whitespace-pre-wrap leading-relaxed text-sm">
+                      {(version as any).description}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+                    Documentação técnica da versão
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>📝</span>
+                    <span>Release Notes</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {/* Scripts */}
           {((version as any).scripts || (version as any).script_executed) && (
-            <div className="bg-white dark:bg-gray-900 shadow rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                <FileCode className="w-5 h-5 mr-2 text-purple-600" />
-                Scripts
-              </h2>
-              <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
-                <pre className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
-                  {(version as any).scripts || (version as any).script_executed}
-                </pre>
+            <div className="bg-white dark:bg-gray-900 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                  <div className="bg-purple-100 dark:bg-purple-900/50 p-2 rounded-lg mr-3">
+                    <FileCode className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <div className="text-lg">Scripts</div>
+                    <div className="text-sm font-normal text-gray-600 dark:text-gray-400">
+                      Arquivos executados nesta versão
+                    </div>
+                  </div>
+                </h2>
               </div>
-              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                💡 Cada linha representa um script executado nesta versão
+              
+              <div className="p-6">
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <pre className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-mono leading-relaxed">
+                    {(version as any).scripts || (version as any).script_executed}
+                  </pre>
+                </div>
+                
+                <div className="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
+                    Scripts de migração e patches
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>💡</span>
+                    <span>Execução sequencial</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {/* Cards Jira */}
-          <div className="bg-white dark:bg-gray-900 shadow rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-              <GitBranch className="w-5 h-5 mr-2 text-green-600" />
-              Cards Jira ({version.cards?.length || 0})
-            </h2>
+          <div className="bg-white dark:bg-gray-900 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                <div className="bg-green-100 dark:bg-green-900/50 p-2 rounded-lg mr-3">
+                  <GitBranch className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <div className="text-lg">Cards Jira</div>
+                  <div className="text-sm font-normal text-gray-600 dark:text-gray-400">
+                    {version.cards?.length || 0} card(s) associado(s)
+                  </div>
+                </div>
+              </h2>
+            </div>
+            
+            <div className="p-6">
             
             {version.cards && version.cards.length > 0 ? (
               <div className="space-y-2">
@@ -265,16 +325,28 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
             ) : (
               <p className="text-gray-500 dark:text-gray-400">Nenhum card associado</p>
             )}
+            </div>
           </div>
         </div>
 
         {/* Sidebar com Clientes */}
         <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-900 shadow rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-              <Users className="w-5 h-5 mr-2 text-indigo-600" />
-              Clientes ({version.version_clients?.length || 0})
-            </h2>
+          <div className="bg-white dark:bg-gray-900 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-lg mr-3">
+                  <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <div>
+                  <div className="text-lg">Clientes</div>
+                  <div className="text-sm font-normal text-gray-600 dark:text-gray-400">
+                    {version.version_clients?.length || 0} cliente(s) usando
+                  </div>
+                </div>
+              </h2>
+            </div>
+            
+            <div className="p-6">
             
             {version.version_clients && version.version_clients.length > 0 ? (
               <div className="space-y-2">
@@ -292,11 +364,15 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
             ) : (
               <p className="text-gray-500 dark:text-gray-400 text-sm">Nenhum cliente usando esta versão</p>
             )}
+            </div>
           </div>
 
           {/* Metadados */}
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Metadados</h3>
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center">
+              <div className="w-2 h-2 bg-gray-400 rounded-full mr-2"></div>
+              Metadados
+            </h3>
             <dl className="space-y-2">
               <div>
                 <dt className="text-xs text-gray-500 dark:text-gray-400">ID da Versão</dt>
