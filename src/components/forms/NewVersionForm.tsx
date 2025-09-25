@@ -37,7 +37,8 @@ export function NewVersionForm() {
     release_date: '',
     scripts: '',
     powerbuilder_version: '',
-    exe_path: ''
+    exe_path: '',
+    description: ''
   })
 
   // Mock data para versões PowerBuilder
@@ -260,6 +261,34 @@ export function NewVersionForm() {
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
               />
             </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Motivo da Versão e Problemas Solucionados *
+            </label>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+              📝 Descreva o motivo desta versão e os problemas que ela soluciona
+            </div>
+            <textarea
+              rows={8}
+              required
+              placeholder={`Motivo da versão:
+[Descreva o principal motivo para gerar esta versão]
+
+Problemas solucionados:
+• Correção do bug X que afetava Y
+• Melhoria na performance da funcionalidade Z
+• Ajuste na validação de dados W
+
+Melhorias implementadas:
+• Nova funcionalidade A
+• Interface mais intuitiva em B
+• Otimização do processo C`}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white text-sm"
+            />
           </div>
 
           <div className="mt-4">

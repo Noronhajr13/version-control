@@ -1,63 +1,15 @@
-### I### 🚨 **ESTADO DA SESSÃO - 23/09/2025**
+### IMPORTANTE
 
-**SESSÃO ATIVA - DESENVOLVIMENTO EM ANDAMENTO** 🚀
-
-**✅ ÚLTIMA CONQUISTA CONCLUÍDA:**
-- **Melhorias UX Nova Versão + Correção Relatórios**: IMPLEMENTADAS COM SUCESSO ✅
-- **Git Commit**: f63e8dd (4 files, +60/-51 lines) 
-- **Status**: Build passing (8.0s) com melhorias implementadas
-- **Deploy**: Vercel auto-deploy ativo com novas funcionalidades
-
-**✅ MELHORIAS UX E CORREÇÕES - IMPLEMENTADAS:**
-- ✅ **Campo Themes Folder**: Removido completamente (não necessário)
-- ✅ **Caminho EXE**: Alterado para campo URL (links SharePoint)
-- ✅ **Versão PowerBuilder**: Convertido para combobox com 4 opções mockadas
-- ✅ **Relatórios Clientes**: Métrica corrigida - conta clientes únicos com versões
-- ✅ **Formulários Sincronizados**: Nova versão e edição com mesmo padrão
-- ✅ **Schema SQL**: Script de migração criado para remoção de campo
-- ✅ **TypeScript**: Tipos atualizados e build passing sem errosSempre responda em português;
+- Sempre responda em português;
 - Sempre buildar após mudanças e pedir minha autorização pra tudo!
 
-### 🚨 **ESTADO DA SESSÃO - 23/09/2025**
+### MELHORIAS FUTURAS
 
-**SESSÃO ATIVA - DESENVOLVIMENTO EM ANDAMENTO** �
+- **Geração de Regras Contextuais:**
+Se você identificar contextos ou padrões específicos que provavelmente serão reutilizados em conversas futuras, adicione uma nova linha, começando com❗Regra recomendada: seguida dos detalhes da regra. Isso ajuda a manter a consistência e a aproveitar o contexto anterior em interações futuras.
 
-**✅ ÚLTIMA CONQUISTA CONCLUÍDA:**
-- **Correções Críticas**: Data Refresh + Redirect Issues RESOLVIDOS
-- **Git Commit**: 81331b3 (7 files, +51/-7 lines)
-- **Status**: Deployed on Vercel successfully
-- **Build**: Passing and optimized
-
-**✅ PROBLEMAS CRÍTICOS CORRIGIDOS:**
-- ✅ Páginas recarregando automaticamente após CRUD operations
-- ✅ React Query invalidateQueries implementado em todas as páginas
-- ✅ Cadastro de usuário redirecionando corretamente em produção
-- ✅ Cache inteligente sincronizando dados em tempo real
-
-**🎯 PRÓXIMAS OPÇÕES DISPONÍVEIS:**
-1. **✅ Fase 3 Concluída**: Dashboard Avançado implementado
-2. **✅ Fase 4 Concluída**: Melhorias de UX implementadas
-3. **✅ Novos Campos Concluída**: PowerBuilder + EXE Path + Scripts
-4. **✅ Sistema de Auditoria Concluída**: Logs + Timeline + Dashboard
-5. **Integrações Externas**: APIs, Webhooks, Git sync
-6. **Export de Dados**: CSV, PDF, Excel dos relatórios
-7. **PWA Features**: Offline support, notifications
-
-**📊 CONTEXTO DA SESSÃO:**
-- Performance optimization 100% implementada
-- React Query funcionando perfeitamente
-- Bundle analysis concluído com sucesso
-- Lazy loading efetivo (37-68% redução)
-- Build time melhorado em 50%
-- Navegação reestruturada completamente
-- ✅ **Correções críticas aplicadas** (Data refresh + Redirect issues)
-- ✅ **Deploy em produção funcionando** (Vercel)
-- ✅ **Dashboard Avançado implementado** (Gráficos Recharts + Métricas)
-- ✅ **UX Melhorias implementadas** (Bulk ops + Shortcuts + Quick Actions)
-- ✅ **Novos Campos de Versão implementados** (PowerBuilder + EXE + Scripts)
-- ✅ **Sistema de Auditoria implementado** (Auto-tracking + Timeline + Dashboard)
-
----
+- **Sugestão de Refatoração Proativa:**
+Ao analisar exemplos de código, se forem identificados potenciais gargalos de desempenho ou problemas de manutenibilidade, proponha proativamente sugestões de refatoração ou otimização de código. Essas propostas devem ser prefixadas com um emoji 🤔 (por exemplo, "🤔 Proposta de Refatoração: ...") para identificá-las facilmente. No entanto, não implemente essas alterações imediatamente; aguarde a confirmação explícita na próxima resposta antes de aplicar quaisquer modificações.
 
 ### MAPEAMENTO DO PROJETO
 

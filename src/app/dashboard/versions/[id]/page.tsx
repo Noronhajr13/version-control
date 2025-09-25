@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/src/lib/supabase/client'
 import Link from 'next/link'
-import { ArrowLeft, Edit, ExternalLink, Calendar, Package, Users, FileCode, GitBranch } from 'lucide-react'
+import { ArrowLeft, Edit, ExternalLink, Calendar, Package, Users, FileCode, FileText, GitBranch } from 'lucide-react'
 
 import type { Database } from '@/src/lib/types/database'
 type VersionWithRelations = Database['public']['Tables']['versions']['Row'] & {
@@ -199,6 +199,24 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
               </div>
             </dl>
           </div>
+
+          {/* Motivo da Versão */}
+          {(version as any).description && (
+            <div className="bg-white dark:bg-gray-900 shadow rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                <FileText className="w-5 h-5 mr-2 text-green-600" />
+                Motivo da Versão e Problemas Solucionados
+              </h2>
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-md border-l-4 border-green-400">
+                <div className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                  {(version as any).description}
+                </div>
+              </div>
+              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                📝 Descrição detalhada do motivo desta versão e problemas que ela soluciona
+              </div>
+            </div>
+          )}
 
           {/* Scripts */}
           {((version as any).scripts || (version as any).script_executed) && (
