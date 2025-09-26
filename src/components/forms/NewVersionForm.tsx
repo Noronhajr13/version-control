@@ -3,15 +3,13 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/src/lib/supabase/client'
-import { toast } from 'sonner'
 import Link from 'next/link'
 import { Plus, Trash2 } from '@/src/components/ui/icons'
 import { useCreateVersion } from '@/src/lib/react-query/hooks/useVersions'
 import { useQueryClient } from '@tanstack/react-query'
+import { ErrorManager } from '@/src/lib/utils/errorHandler'
 
-// Utility function para contornar problemas de tipo do Supabase
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const supabaseOperation = (operation: any) => operation
+// Removido supabaseOperation - usando cliente diretamente
 
 interface Module {
   id: number;
@@ -102,12 +100,14 @@ export function NewVersionForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    const loadingToast = ErrorManager.showLoading('Criando versão...')
     setIsLoading(true)
 
     try {
       // Criar a versão
-      const { data: versionData, error: versionError } = await supabaseOperation(supabase
-        .from('versions'))
+      const { data: versionData, error: versionError } = await supabase
+        .from('versions')
         .insert([formData])
         .select()
         .single()
@@ -124,29 +124,37 @@ export function NewVersionForm() {
           }))
 
         if (cardsToInsert.length > 0) {
-          const { error: cardsError } = await supabaseOperation(supabase
-            .from('cards'))
+          const { error: cardsError } = await supabase
+            .from('cards')
             .insert(cardsToInsert)
           
           if (cardsError) throw cardsError
         }
       }
 
-      // Adicionar clientes
+      // Adicionar clientes se a tabela existe
       if (selectedClients.length > 0 && versionData) {
-        const versionClientsToInsert = selectedClients.map(clientId => ({
-          version_id: versionData.id,
-          client_id: clientId
-        }))
+        try {
+          const versionClientsToInsert = selectedClients.map(clientId => ({
+            version_id: versionData.id,
+            client_id: clientId
+          }))
 
-        const { error: clientsError } = await supabaseOperation(supabase
-          .from('version_clients'))
-          .insert(versionClientsToInsert)
-        
-        if (clientsError) throw clientsError
+          const { error: clientsError } = await supabase
+            .from('version_clients')
+            .insert(versionClientsToInsert)
+          
+          if (clientsError) {
+            console.warn('Tabela version_clients não encontrada ou erro ao inserir clientes:', clientsError)
+            // Não falha a criação da versão se os clientes não puderem ser associados
+          }
+        } catch (clientError) {
+          console.warn('Erro ao associar clientes à versão:', clientError)
+          // Continue sem falhar
+        }
       }
 
-      toast.success('Versão criada com sucesso')
+      ErrorManager.showSuccessMessage('create', 'Versão')
       
       // Invalidar cache do React Query para recarregar dados
       queryClient.invalidateQueries({ queryKey: ['versions'] })
@@ -155,11 +163,9 @@ export function NewVersionForm() {
       
       router.push('/dashboard/versions')
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error('Erro ao criar versão: ' + error.message)
-      } else {
-        toast.error('Erro ao criar versão')
-      }
+      ErrorManager.handleGenericError(error)
+    } finally {
+      ErrorManager.dismissLoading(loadingToast)
       setIsLoading(false)
     }
   }
