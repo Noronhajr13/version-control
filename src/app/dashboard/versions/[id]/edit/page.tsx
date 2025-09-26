@@ -4,14 +4,10 @@ import { useState, useEffect } from 'react'
 import type { Database } from '@/src/lib/types/database'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
-import { toast } from 'sonner'
 import Link from 'next/link'
 import { Plus, Trash2, Loader2 } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
-
-// Utility function para contornar problemas de tipo do Supabase
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const supabaseOperation = (operation: any) => operation
+import { ErrorManager } from '@/src/lib/utils/errorHandler'
 
 export default function EditVersionPage({ params }: { params: Promise<{ id: string }> }) {
   const [versionId, setVersionId] = useState('')
@@ -35,6 +31,8 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     powerbuilder_version: string
     exe_path: string
     description: string
+    status: 'interna' | 'teste' | 'homologacao' | 'producao' | 'deprecated'
+    data_generation: string
   }>({
     module_id: '',
     tag: '',
@@ -44,8 +42,19 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     scripts: '',
     powerbuilder_version: '',
     exe_path: '',
-    description: ''
+    description: '',
+    status: 'interna',
+    data_generation: ''
   })
+
+  // Status options para o select
+  const statusOptions = [
+    { value: 'interna', label: 'Interna', color: 'bg-gray-100 text-gray-800' },
+    { value: 'teste', label: 'Teste', color: 'bg-blue-100 text-blue-800' },
+    { value: 'homologacao', label: 'Homologação', color: 'bg-yellow-100 text-yellow-800' },
+    { value: 'producao', label: 'Produção', color: 'bg-green-100 text-green-800' },
+    { value: 'deprecated', label: 'Descontinuada', color: 'bg-red-100 text-red-800' }
+  ]
 
   // Mock data para versões PowerBuilder
   const powerbuildervVersions = [
@@ -101,7 +110,10 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
         }>()
 
       if (versionError || !versionData) {
-        toast.error('Erro ao carregar versão')
+        ErrorManager.handleAPIError({
+          code: 'version-not-found',
+          message: 'Erro ao carregar versão'
+        })
         router.push('/dashboard/versions')
         return
       }
@@ -116,7 +128,9 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
         scripts: (versionData as any).scripts ?? (versionData as any).script_executed ?? '',
         powerbuilder_version: (versionData as any).powerbuilder_version ?? '',
         exe_path: (versionData as any).exe_path ?? '',
-        description: (versionData as any).description ?? ''
+        description: (versionData as any).description ?? '',
+        status: (versionData as any).status ?? 'interna',
+        data_generation: (versionData as any).data_generation ?? ''
       })
 
       // Preencher cards
@@ -130,7 +144,7 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
       }
 
     } catch (error) {
-      toast.error('Erro ao carregar dados')
+      ErrorManager.handleGenericError(error)
       router.push('/dashboard/versions')
     } finally {
       setIsLoadingData(false)
@@ -165,12 +179,14 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    const loadingToast = ErrorManager.showLoading('Atualizando versão...')
     setIsLoading(true)
 
     try {
       // Atualizar a versão
-      const { error: versionError } = await supabaseOperation(supabase
-        .from('versions'))
+      const { error: versionError } = await supabase
+        .from('versions')
         .update(formData)
         .eq('id', versionId)
 
@@ -191,8 +207,8 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
         if (card.jira_number) {
           if (card.id) {
             // Atualizar card existente
-            const { error } = await supabaseOperation(supabase
-              .from('cards'))
+            const { error } = await supabase
+              .from('cards')
               .update({
                 jira_number: card.jira_number,
                 last_update: card.last_update
@@ -202,8 +218,8 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
             if (error) throw error
           } else {
             // Criar novo card
-            const { error } = await supabaseOperation(supabase
-              .from('cards'))
+            const { error } = await supabase
+              .from('cards')
               .insert({
                 version_id: versionId,
                 jira_number: card.jira_number,
@@ -231,14 +247,14 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
           client_id: clientId
         }))
 
-        const { error: clientsError } = await supabaseOperation(supabase
-          .from('version_clients'))
+        const { error: clientsError } = await supabase
+          .from('version_clients')
           .insert(versionClientsToInsert)
         
         if (clientsError) throw clientsError
       }
 
-      toast.success('Versão atualizada com sucesso')
+      ErrorManager.showSuccessMessage('update', 'Versão')
       
       // Invalidar cache do React Query para recarregar dados
       queryClient.invalidateQueries({ queryKey: ['versions'] })
@@ -248,11 +264,9 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
       
       router.push(`/dashboard/versions/${versionId}`)
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error('Erro ao atualizar versão: ' + error.message)
-      } else {
-        toast.error('Erro ao atualizar versão')
-      }
+      ErrorManager.handleGenericError(error)
+    } finally {
+      ErrorManager.dismissLoading(loadingToast)
       setIsLoading(false)
     }
   }
@@ -324,6 +338,19 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Data de Geração *
+              </label>
+              <input
+                type="date"
+                required
+                value={formData.data_generation}
+                onChange={(e) => setFormData({ ...formData, data_generation: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Data de Liberação
               </label>
               <input
@@ -332,6 +359,24 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
                 onChange={(e) => setFormData({ ...formData, release_date: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Status da Versão *
+              </label>
+              <select
+                required
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value as 'interna' | 'teste' | 'homologacao' | 'producao' | 'deprecated' })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              >
+                {statusOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
