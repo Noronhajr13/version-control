@@ -83,7 +83,7 @@ export default function DashboardPage() {
         />
         
         <MetricCard
-          title="Versões Este Mês"
+          title="Versões/Mês Atual"
           value={metrics.versionsThisMonth}
           previousValue={metrics.versionsLastMonth}
           icon={<GitBranch className="w-6 h-6" />}

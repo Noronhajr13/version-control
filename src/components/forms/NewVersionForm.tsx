@@ -38,8 +38,17 @@ export function NewVersionForm() {
     scripts: '',
     powerbuilder_version: '',
     exe_path: '',
-    description: ''
+    description: '',
+    status: 'interna' as 'interna' | 'testes' | 'producao',
+    data_generation: ''
   })
+
+  // Status options para o select
+  const statusOptions = [
+    { value: 'interna', label: 'Interna', color: 'bg-gray-100 text-gray-800' },
+    { value: 'testes', label: 'Testes', color: 'bg-yellow-100 text-yellow-800' },
+    { value: 'producao', label: 'Produção', color: 'bg-green-100 text-green-800' }
+  ]
 
   // Mock data para versões PowerBuilder
   const powerbuildervVersions = [
@@ -210,6 +219,19 @@ export function NewVersionForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Data de Geração *
+              </label>
+              <input
+                type="date"
+                required
+                value={formData.data_generation}
+                onChange={(e) => setFormData({ ...formData, data_generation: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Data de Liberação
               </label>
               <input
@@ -218,6 +240,24 @@ export function NewVersionForm() {
                 onChange={(e) => setFormData({ ...formData, release_date: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Status da Versão *
+              </label>
+              <select
+                required
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value as 'interna' | 'testes' | 'producao' })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              >
+                {statusOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>

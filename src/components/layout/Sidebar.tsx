@@ -37,7 +37,7 @@ export function Sidebar() {
     <aside className="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-screen">
       <div className="p-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Version Control
+          Controle de versões
         </h1>
       </div>
       
