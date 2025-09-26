@@ -3,30 +3,71 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/src/lib/supabase/client'
-import { toast } from 'sonner'
+import { ValidatedInput } from '@/src/components/ui/ValidatedInput'
+import { ErrorManager } from '@/src/lib/utils/errorHandler'
+import { authSchema } from '@/src/lib/validations/schemas'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(false)
   const [isSignUp, setIsSignUp] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
+  const handleValidationChange = (field: string, isValid: boolean, error?: string) => {
+    setValidationErrors(prev => ({
+      ...prev,
+      [field]: error || ''
+    }))
+  }
+
+  const validateForm = (): boolean => {
+    try {
+      authSchema.parse(formData)
+      return true
+    } catch (error) {
+      if (error instanceof Error) {
+        ErrorManager.handleGenericError(error)
+      }
+      return false
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validar formulário
+    if (!validateForm()) {
+      return
+    }
+
+    // Verificar se há erros de validação
+    const hasValidationErrors = Object.values(validationErrors).some(error => error !== '')
+    if (hasValidationErrors) {
+      ErrorManager.handleAPIError({
+        code: 'validation-error',
+        message: 'Por favor, corrija os erros no formulário'
+      })
+      return
+    }
+
+    const loadingToast = ErrorManager.showLoading(isSignUp ? 'Criando conta...' : 'Fazendo login...')
     setIsLoading(true)
 
     try {
       if (isSignUp) {
         // Usar URL do production no Vercel ou localhost em desenvolvimento
         const redirectUrl = process.env.NODE_ENV === 'production' 
-          ? 'https://version-control-2qpkf4r8p-noronhas-projects-67ae95f6.vercel.app/auth/callback'
+          ? 'https://version-control-op0syekdj-noronhas-projects-67ae95f6.vercel.app/auth/callback'
           : `${window.location.origin}/auth/callback`
           
         const { error } = await supabase.auth.signUp({
-          email,
-          password,
+          email: formData.email,
+          password: formData.password,
           options: {
             emailRedirectTo: redirectUrl,
           },
@@ -34,26 +75,23 @@ export default function LoginPage() {
         
         if (error) throw error
         
-        toast.success('Conta criada! Verifique seu email para confirmar.')
+        ErrorManager.showSuccessMessage('create', 'Conta criada! Verifique seu email para confirmar')
       } else {
         const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+          email: formData.email,
+          password: formData.password,
         })
         
         if (error) throw error
         
-        toast.success('Login realizado com sucesso!')
+        ErrorManager.showSuccessMessage('login', 'Login realizado com sucesso!')
         router.push('/dashboard')
         router.refresh()
       }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error(error.message || 'Erro ao processar solicitação')
-      } else {
-        toast.error('Erro ao processar solicitação')
-      }
+    } catch (error) {
+      ErrorManager.handleGenericError(error)
     } finally {
+      ErrorManager.dismissLoading(loadingToast)
       setIsLoading(false)
     }
   }
@@ -71,40 +109,43 @@ export default function LoginPage() {
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-2 mt-1 border border-gray-300 dark:border-gray-700 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-800 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="seu@email.com"
-              />
-            </div>
+          <div className="space-y-4">
+            <ValidatedInput
+              id="email"
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              validation={{
+                required: true
+              }}
+              onValidationChange={(isValid, error) => handleValidationChange('email', isValid, error)}
+              error={validationErrors.email}
+              placeholder="seu@email.com"
+              autoComplete="email"
+              validateOnBlur
+              validateOnChange
+            />
             
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Senha
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none relative block w-full px-3 py-2 mt-1 border border-gray-300 dark:border-gray-700 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-800 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="••••••••"
-              />
-            </div>
+            <ValidatedInput
+              id="password"
+              label="Senha"
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+              validation={{
+                required: true,
+                minLength: 6
+              }}
+              onValidationChange={(isValid, error) => handleValidationChange('password', isValid, error)}
+              error={validationErrors.password}
+              placeholder="••••••••"
+              autoComplete={isSignUp ? "new-password" : "current-password"}
+              showPasswordToggle
+              validateOnBlur
+              validateOnChange
+              helperText={isSignUp ? "Senha deve ter pelo menos 6 caracteres" : undefined}
+            />
           </div>
 
           <div>
