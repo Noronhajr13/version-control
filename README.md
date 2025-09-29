@@ -1,325 +1,183 @@
-# 🚀 Sistema de Controle de Versões
+# Supabase CLI
 
-Sistema completo para controle de versões de produtos com autenticação, gerenciamento de módulos, clientes e versões integrado com Supabase.
+[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
+](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
 
-## � Descrição do Projeto
+[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
 
-Este é um sistema web desenvolvido para gerenciar o controle de versões de produtos de software, permitindo o acompanhamento de:
+This repository contains all the functionality for Supabase CLI.
 
-- **Módulos**: Componentes principais do sistema
-- **Clientes**: Empresas que utilizam as versões
-- **Versões**: Releases dos módulos com cards Jira associados
-- **Relatórios**: Análises e visualizações dos dados
+- [x] Running Supabase locally
+- [x] Managing database migrations
+- [x] Creating and deploying Supabase Functions
+- [x] Generating types directly from your database schema
+- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
 
-## 🛠️ Stack Tecnológica
+## Getting started
 
-### Frontend
-- **Next.js 14.2.3** - Framework React com App Router
-- **TypeScript** - Tipagem estática
-- **Tailwind CSS** - Framework CSS utilitário
-- **Lucide React** - Biblioteca de ícones
-- **Sonner** - Sistema de notificações toast
+### Install the CLI
 
-### Backend & Banco de Dados
-- **Supabase** - BaaS (Backend as a Service)
-  - PostgreSQL como banco de dados
-  - Autenticação integrada
-  - Row Level Security (RLS)
-  - Realtime subscriptions
-
-### Utilitários
-- **date-fns** - Manipulação de datas
-- **react-hook-form** - Gerenciamento de formulários
-- **clsx + tailwind-merge** - Combinação de classes CSS
-- **@tanstack/react-query** - Cache e sincronização de dados
-
-## 🏗️ Arquitetura do Projeto
-
-```
-version-control-app/
-├── src/
-│   ├── app/                    # App Router do Next.js
-│   │   ├── auth/              # Sistema de autenticação
-│   │   │   ├── login/         # Página de login/cadastro
-│   │   │   └── callback/      # Callback do Supabase Auth
-│   │   ├── dashboard/         # Layout principal protegido
-│   │   ├── modules/           # CRUD de módulos
-│   │   ├── clients/           # CRUD de clientes
-│   │   ├── versions/          # CRUD de versões
-│   │   ├── reports/           # Relatórios e análises
-│   │   └── api/               # API routes
-│   ├── components/            # Componentes reutilizáveis
-│   │   ├── ui/               # Componentes de interface
-│   │   ├── layout/           # Componentes de layout
-│   │   └── forms/            # Componentes de formulários
-│   ├── lib/                  # Configurações e utilitários
-│   │   ├── supabase/         # Configurações do Supabase
-│   │   └── types/            # Definições de tipos TypeScript
-│   ├── hooks/                # Custom React Hooks
-│   └── utils/                # Funções utilitárias
-├── public/                   # Arquivos estáticos
-└── config files             # Configurações do projeto
-```
-
-## 🗄️ Modelo de Dados
-
-### Tabelas Principais
-
-**modules**
-```sql
-- id (uuid, primary key)
-- name (text)
-- created_at (timestamp)
-```
-
-**clients**
-```sql
-- id (uuid, primary key)
-- name (text)
-- uf (text) -- Estado brasileiro
-- created_at (timestamp)
-```
-
-**versions**
-```sql
-- id (uuid, primary key)
-- module_id (uuid, foreign key)
-- tag (text) -- Ex: v4.24.83
-- version_number (text) -- Ex: 4.24083.00
-- jira_card (text, optional) -- Link principal do Jira
-- themes_folder (text, optional)
-- release_date (date, optional)
-- script_executed (text, optional)
-- created_at (timestamp)
-```
-
-**cards**
-```sql
-- id (uuid, primary key)
-- version_id (uuid, foreign key)
-- jira_number (text) -- Número ou link do card
-- last_update (date)
-```
-
-**version_clients** (tabela de relacionamento)
-```sql
-- id (uuid, primary key)
-- version_id (uuid, foreign key)
-- client_id (uuid, foreign key)
-```
-
-## 🔧 Instalação e Configuração
-
-### Pré-requisitos
-- Node.js 18+ 
-- npm ou yarn
-- Conta no [Supabase](https://supabase.com)
-
-### 1. Clone e Instale Dependências
-```bash
-git clone <repo-url>
-cd version-control-app
-npm install
-```
-
-### 2. Configure o Supabase
-
-1. Crie um projeto no [Supabase](https://supabase.com)
-2. Execute o SQL de criação das tabelas (disponível na documentação)
-3. Configure as políticas RLS
-4. Obtenha a URL e chave anônima do projeto
-
-### 3. Variáveis de Ambiente
-Crie `.env.local`:
-```env
-NEXT_PUBLIC_SUPABASE_URL=sua_url_do_projeto
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anonima
-```
-
-### 4. Execute o Projeto
-```bash
-npm run dev
-```
-
-Acesse: `http://localhost:3000`
-
-## 🎯 Funcionalidades Implementadas
-
-### ✅ Sistema de Autenticação
-- Login/Cadastro com email e senha
-- Proteção de rotas
-- Logout seguro
-- Redirecionamento automático
-
-### ✅ Gerenciamento de Módulos
-- Listagem com paginação
-- Criação de novos módulos
-- Edição de módulos existentes
-- Exclusão com confirmação
-
-### ✅ Gerenciamento de Clientes
-- CRUD completo
-- Seleção de UF (estados brasileiros)
-- Validação de dados
-- Interface responsiva
-
-### ✅ Gerenciamento de Versões
-- Criação de versões associadas a módulos
-- Múltiplos cards Jira por versão
-- Associação com múltiplos clientes
-- Scripts SQL executados
-- Visualização detalhada
-
-### ✅ Relatórios
-- Versões por módulo
-- Clientes por versão
-- Filtros dinâmicos
-- Interface intuitiva
-
-### ✅ Interface e UX
-- Dark mode implementado
-- Design responsivo
-- Notificações toast
-- Loading states
-- Tratamento de erros
-
-## � Segurança Implementada
-
-- **Row Level Security (RLS)** habilitado no Supabase
-- **Autenticação obrigatória** para todas as operações
-- **Validação de dados** no frontend e backend
-- **Middleware de autenticação** do Next.js
-- **Tipagem TypeScript** para segurança de tipos
-
-## 🎨 Personalização
-
-### Temas e Cores
-O sistema utiliza CSS Custom Properties para temas:
-```css
-/* Light mode */
-:root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  /* ... */
-}
-
-/* Dark mode */
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  /* ... */
-}
-```
-
-### Componentes UI Reutilizáveis
-- `Button` - Botão com variants e estados
-- `Input` - Campo de entrada com validação
-- `Card` - Container de conteúdo
-- `Badge` - Marcadores coloridos
-- `EmptyState` - Estado vazio com ações
-
-## 📊 Performance e Otimizações
-
-### Implementadas
-- **Server Components** para reduzir bundle JavaScript
-- **Client Components** apenas quando necessário
-- **TypeScript strict** para detecção precoce de erros
-- **Tailwind CSS** para CSS otimizado
-- **Image optimization** do Next.js (quando aplicável)
-
-### Padrões de Código
-- **Separation of Concerns** - Lógica separada da apresentação
-- **Custom Hooks** - Reutilização de lógica
-- **TypeScript** - Tipagem forte e interfaces bem definidas
-- **Error Boundaries** - Tratamento de erros gracioso
-
-## 🧪 Testes (Planejado)
+Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
 
 ```bash
-# Testes unitários
-npm run test
-
-# Testes E2E
-npm run test:e2e
-
-# Coverage
-npm run test:coverage
+npm i supabase --save-dev
 ```
 
-## 🚀 Deploy
+To install the beta release channel:
 
-### Vercel (Recomendado)
 ```bash
-npm run build
-vercel deploy
+npm i supabase@beta --save-dev
 ```
 
-### Outras Plataformas
-- Netlify
-- Railway
-- AWS Amplify
+When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
 
-## 📈 Roadmap e Melhorias Futuras
-
-### Funcionalidades Planejadas
-- [ ] **Dashboard com métricas** - Gráficos e estatísticas
-- [ ] **Histórico de alterações** - Auditoria completa
-- [ ] **Upload de arquivos** - Anexos nas versões
-- [ ] **Notificações em tempo real** - WebSockets
-- [ ] **API REST** - Endpoints para integração
-- [ ] **Backup automático** - Sincronização de dados
-- [ ] **Multi-tenancy** - Suporte a múltiplas organizações
-
-### Melhorias Técnicas
-- [ ] **Testes automatizados** - Jest + React Testing Library
-- [ ] **CI/CD Pipeline** - GitHub Actions
-- [ ] **Monitoramento** - Sentry para erros
-- [ ] **Analytics** - Plausible ou GA4
-- [ ] **Documentação API** - Swagger/OpenAPI
-
-## 🤝 Contribuição
-
-### Padrões de Commit
 ```
-feat: adiciona nova funcionalidade
-fix: corrige bug
-docs: atualiza documentação
-style: formatação de código
-refactor: refatoração sem mudança de funcionalidade
-test: adiciona testes
-chore: tarefas de manutenção
+NODE_OPTIONS=--no-experimental-fetch yarn add supabase
 ```
 
-### Workflow
-1. Fork do projeto
-2. Criar branch feature (`git checkout -b feature/nova-funcionalidade`)
-3. Commit das alterações (`git commit -m 'feat: adiciona nova funcionalidade'`)
-4. Push para branch (`git push origin feature/nova-funcionalidade`)
-5. Abrir Pull Request
+> **Note**
+For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
 
-## 📞 Suporte e Documentação
+<details>
+  <summary><b>macOS</b></summary>
 
-### Links Úteis
-- [Documentação do Supabase](https://supabase.com/docs)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Tailwind CSS](https://tailwindcss.com/docs)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs)
+  Available via [Homebrew](https://brew.sh). To install:
 
-### Troubleshooting
+  ```sh
+  brew install supabase/tap/supabase
+  ```
 
-**Problema**: Erro de conexão com Supabase
-**Solução**: Verifique as variáveis de ambiente e configurações RLS
+  To install the beta release channel:
+  
+  ```sh
+  brew install supabase/tap/supabase-beta
+  brew link --overwrite supabase-beta
+  ```
+  
+  To upgrade:
 
-**Problema**: Erro de build do TypeScript
-**Solução**: Execute `npm run build` e corrija os erros de tipagem
+  ```sh
+  brew upgrade supabase
+  ```
+</details>
 
-**Problema**: CSS não aplicado
-**Solução**: Verifique se o Tailwind está configurado corretamente
+<details>
+  <summary><b>Windows</b></summary>
 
-## 📄 Licença
+  Available via [Scoop](https://scoop.sh). To install:
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para detalhes.
+  ```powershell
+  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+  scoop install supabase
+  ```
 
----
+  To upgrade:
 
-**Desenvolvido com ❤️ usando Next.js, TypeScript e Supabase**
+  ```powershell
+  scoop update supabase
+  ```
+</details>
+
+<details>
+  <summary><b>Linux</b></summary>
+
+  Available via [Homebrew](https://brew.sh) and Linux packages.
+
+  #### via Homebrew
+
+  To install:
+
+  ```sh
+  brew install supabase/tap/supabase
+  ```
+
+  To upgrade:
+
+  ```sh
+  brew upgrade supabase
+  ```
+
+  #### via Linux packages
+
+  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
+
+  ```sh
+  sudo apk add --allow-untrusted <...>.apk
+  ```
+
+  ```sh
+  sudo dpkg -i <...>.deb
+  ```
+
+  ```sh
+  sudo rpm -i <...>.rpm
+  ```
+
+  ```sh
+  sudo pacman -U <...>.pkg.tar.zst
+  ```
+</details>
+
+<details>
+  <summary><b>Other Platforms</b></summary>
+
+  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
+
+  ```sh
+  go install github.com/supabase/cli@latest
+  ```
+
+  Add a symlink to the binary in `$PATH` for easier access:
+
+  ```sh
+  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
+  ```
+
+  This works on other non-standard Linux distros.
+</details>
+
+<details>
+  <summary><b>Community Maintained Packages</b></summary>
+
+  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
+  To install in your working directory:
+
+  ```bash
+  pkgx install supabase
+  ```
+
+  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
+</details>
+
+### Run the CLI
+
+```bash
+supabase bootstrap
+```
+
+Or using npx:
+
+```bash
+npx supabase bootstrap
+```
+
+The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+
+## Docs
+
+Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+
+## Breaking changes
+
+We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
+
+However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
+
+## Developing
+
+To run from source:
+
+```sh
+# Go >= 1.22
+go run . help
+```

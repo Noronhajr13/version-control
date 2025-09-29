@@ -178,6 +178,76 @@ export interface Database {
           tags?: string[] | null
         }
       }
+      user_profiles: {
+        Row: {
+          id: string
+          email: string
+          display_name: string | null
+          role: 'super_admin' | 'admin' | 'manager' | 'editor' | 'viewer'
+          department: string | null
+          avatar_url: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+          created_by: string | null
+          last_login_at: string | null
+        }
+        Insert: {
+          id: string
+          email: string
+          display_name?: string | null
+          role?: 'super_admin' | 'admin' | 'manager' | 'editor' | 'viewer'
+          department?: string | null
+          avatar_url?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+          created_by?: string | null
+          last_login_at?: string | null
+        }
+        Update: {
+          id?: string
+          email?: string
+          display_name?: string | null
+          role?: 'super_admin' | 'admin' | 'manager' | 'editor' | 'viewer'
+          department?: string | null
+          avatar_url?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+          created_by?: string | null
+          last_login_at?: string | null
+        }
+      }
+      user_permissions: {
+        Row: {
+          id: string
+          user_id: string
+          resource: string
+          action: string
+          allowed: boolean
+          created_at: string
+          created_by: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          resource: string
+          action: string
+          allowed?: boolean
+          created_at?: string
+          created_by?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          resource?: string
+          action?: string
+          allowed?: boolean
+          created_at?: string
+          created_by?: string | null
+        }
+      }
     }
     Views: {
       audit_logs_with_user_info: {
@@ -247,9 +317,64 @@ export interface Database {
       cleanup_old_audit_logs: {
         Returns: number
       }
+      has_permission: {
+        Args: {
+          user_id_param: string
+          resource_param: string
+          action_param: string
+        }
+        Returns: boolean
+      }
+      get_user_with_permissions: {
+        Args: {
+          user_id_param: string
+        }
+        Returns: {
+          id: string
+          email: string
+          display_name: string | null
+          role: 'super_admin' | 'admin' | 'manager' | 'editor' | 'viewer'
+          department: string | null
+          avatar_url: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+          last_login_at: string | null
+          permissions: Record<string, any>
+        }[]
+      }
     }
   }
 }
 
 // Exported types for convenience
 export type VersionStatus = 'interna' | 'teste' | 'homologacao' | 'producao' | 'deprecated'
+export type UserRole = 'super_admin' | 'admin' | 'manager' | 'editor' | 'viewer'
+
+export interface UserProfile {
+  id: string
+  email: string
+  display_name: string | null
+  role: UserRole
+  department: string | null
+  avatar_url: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
+  created_by: string | null
+  last_login_at: string | null
+}
+
+export interface UserPermission {
+  id: string
+  user_id: string
+  resource: string
+  action: string
+  allowed: boolean
+  created_at: string
+  created_by: string | null
+}
+
+export interface UserWithPermissions extends UserProfile {
+  permissions: Record<string, boolean>
+}
