@@ -10,24 +10,27 @@ import {
   Home,
   Clock,
   LogOut,
-  Shield
+  Shield,
+  Settings
 } from 'lucide-react'
 import { createClient } from '@/src/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { usePermissions } from '@/src/hooks/usePermissions'
+import { useUIPermissions } from '@/src/hooks/useUIPermissions'
 import { ProtectedComponent } from '@/src/components/auth/ProtectedComponent'
 
 const menuItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/dashboard/modules', label: 'Módulos', icon: Package },
-  { href: '/dashboard/clients', label: 'Clientes', icon: Users },
-  { href: '/dashboard/versions', label: 'Versões', icon: GitBranch },
-  { href: '/dashboard/reports', label: 'Relatórios', icon: FileText },
-  { href: '/dashboard/audit', label: 'Auditoria', icon: Clock },
+  { href: '/dashboard', label: 'Dashboard', icon: Home, elementKey: 'sidebar_dashboard' },
+  { href: '/dashboard/modules', label: 'Módulos', icon: Package, elementKey: 'sidebar_modules' },
+  { href: '/dashboard/clients', label: 'Clientes', icon: Users, elementKey: 'sidebar_clients' },
+  { href: '/dashboard/versions', label: 'Versões', icon: GitBranch, elementKey: 'sidebar_versions' },
+  { href: '/dashboard/reports', label: 'Relatórios', icon: FileText, elementKey: 'sidebar_reports' },
+  { href: '/dashboard/audit', label: 'Auditoria', icon: Clock, elementKey: 'sidebar_audit' },
 ]
 
 const adminMenuItems = [
-  { href: '/dashboard/users', label: 'Usuários', icon: Shield }
+  { href: '/dashboard/users', label: 'Usuários', icon: Shield, elementKey: 'sidebar_users' },
+  { href: '/dashboard/permissions', label: 'Permissões UI', icon: Settings, elementKey: 'sidebar_permissions' }
 ]
 
 export function Sidebar() {
@@ -35,6 +38,7 @@ export function Sidebar() {
   const router = useRouter()
   const supabase = createClient()
   const permissions = usePermissions()
+  const uiPermissions = useUIPermissions()
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -44,6 +48,34 @@ export function Sidebar() {
   const renderMenuItem = (item: typeof menuItems[0]) => {
     const Icon = item.icon
     const isActive = pathname.startsWith(item.href)
+    
+    // Verificar se o menu está visível baseado nas permissões granulares
+    if (item.elementKey && !uiPermissions.isVisible(item.elementKey)) {
+      return null
+    }
+    
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`flex items-center px-6 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
+          isActive ? 'bg-gray-100 dark:bg-gray-800 border-r-4 border-blue-500' : ''
+        }`}
+      >
+        <Icon className="w-5 h-5 mr-3" />
+        {item.label}
+      </Link>
+    )
+  }
+
+  const renderAdminMenuItem = (item: typeof adminMenuItems[0]) => {
+    const Icon = item.icon
+    const isActive = pathname.startsWith(item.href)
+    
+    // Verificar se o menu está visível baseado nas permissões granulares
+    if (item.elementKey && !uiPermissions.isVisible(item.elementKey)) {
+      return null
+    }
     
     return (
       <Link
@@ -83,7 +115,7 @@ export function Sidebar() {
                 Administração
               </span>
             </div>
-            {adminMenuItems.map(renderMenuItem)}
+            {adminMenuItems.map(renderAdminMenuItem)}
           </div>
         </ProtectedComponent>
         

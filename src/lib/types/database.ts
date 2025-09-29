@@ -378,3 +378,36 @@ export interface UserPermission {
 export interface UserWithPermissions extends UserProfile {
   permissions: Record<string, boolean>
 }
+
+// UI Elements and Granular Permissions Types
+export interface UIElement {
+  id: string
+  element_key: string
+  element_name: string
+  element_type: 'menu' | 'button' | 'section' | 'feature'
+  parent_resource: string | null
+  description: string | null
+  is_active: boolean
+  created_at: string
+}
+
+export interface UserUIPermission {
+  id: string
+  user_id: string
+  ui_element_id: string
+  is_visible: boolean
+  is_enabled: boolean
+  created_at: string
+  updated_at: string
+  created_by: string | null
+}
+
+export interface UIPermissionWithElement {
+  element_key: string
+  element_name: string
+  element_type: 'menu' | 'button' | 'section' | 'feature'
+  parent_resource: string | null
+  is_visible: boolean
+  is_enabled: boolean
+  has_custom_permission: boolean
+}
