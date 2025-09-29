@@ -7,9 +7,10 @@ import { Card } from '@/src/components/ui/Card'
 import { Button } from '@/src/components/ui/Button'
 import { Badge } from '@/src/components/ui/Badge'
 import { AdminOnly } from '@/src/components/auth/ProtectedComponent'
+import { AddUserModal } from '@/src/components/admin/AddUserModal'
 import { useAuth } from '@/src/hooks/useAuth'
 import { toast } from 'sonner'
-import { User, Shield, Clock, Mail, Building } from 'lucide-react'
+import { User, Shield, Clock, Mail, Building, UserPlus, BarChart3, RefreshCw } from 'lucide-react'
 
 const roleLabels: Record<UserRole, string> = {
   super_admin: 'Super Admin',
@@ -31,11 +32,19 @@ export default function UsersManagementPage() {
   const [users, setUsers] = useState<UserProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
+  const [showAddUserModal, setShowAddUserModal] = useState(false)
+  const [userStats, setUserStats] = useState<{
+    total_auth_users: number
+    total_profiles: number
+    unregistered_users: number
+    active_profiles: number
+  } | null>(null)
   const { userProfile } = useAuth()
   const supabase = createClient()
 
   useEffect(() => {
     fetchUsers()
+    fetchUserStats()
   }, [])
 
   const fetchUsers = async () => {
@@ -53,6 +62,28 @@ export default function UsersManagementPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const fetchUserStats = async () => {
+    try {
+      const { data, error } = await supabase
+        .rpc('get_user_stats')
+        .single()
+
+      if (error) {
+        console.warn('Error fetching user stats:', error)
+        return
+      }
+
+      setUserStats(data as any)
+    } catch (error) {
+      console.warn('Error in fetchUserStats:', error)
+    }
+  }
+
+  const handleUserAdded = () => {
+    fetchUsers()
+    fetchUserStats()
   }
 
   const updateUserRole = async (userId: string, newRole: UserRole) => {
@@ -136,11 +167,89 @@ export default function UsersManagementPage() {
             </p>
           </div>
           
-          <div className="flex items-center gap-2">
-            <User className="w-5 h-5" />
-            <span className="font-medium">{users.length} usuários</span>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={() => setShowAddUserModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Adicionar Usuário
+            </Button>
+            
+            <Button
+              variant="outline"
+              onClick={() => {
+                fetchUsers()
+                fetchUserStats()
+              }}
+              disabled={loading}
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Atualizar
+            </Button>
           </div>
         </div>
+
+        {/* Estatísticas de Usuários */}
+        {userStats && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Total Autenticados
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {userStats.total_auth_users}
+                  </p>
+                </div>
+                <Shield className="w-8 h-8 text-blue-500" />
+              </div>
+            </Card>
+            
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Com Perfil
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {userStats.total_profiles}
+                  </p>
+                </div>
+                <User className="w-8 h-8 text-green-500" />
+              </div>
+            </Card>
+            
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Sem Perfil
+                  </p>
+                  <p className="text-2xl font-bold text-orange-600">
+                    {userStats.unregistered_users}
+                  </p>
+                </div>
+                <UserPlus className="w-8 h-8 text-orange-500" />
+              </div>
+            </Card>
+            
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Ativos
+                  </p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {userStats.active_profiles}
+                  </p>
+                </div>
+                <BarChart3 className="w-8 h-8 text-green-500" />
+              </div>
+            </Card>
+          </div>
+        )}
 
         <div className="grid gap-4">
           {users.map((user) => (
@@ -262,6 +371,13 @@ export default function UsersManagementPage() {
             </Card>
           </div>
         )}
+
+        {/* Modal para Adicionar Usuários */}
+        <AddUserModal
+          isOpen={showAddUserModal}
+          onClose={() => setShowAddUserModal(false)}
+          onUserAdded={handleUserAdded}
+        />
       </div>
     </AdminOnly>
   )

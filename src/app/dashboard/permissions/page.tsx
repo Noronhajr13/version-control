@@ -6,8 +6,9 @@ import { UserProfile, UIPermissionWithElement } from '@/src/lib/types/database'
 import { Card } from '@/src/components/ui/Card'
 import { Button } from '@/src/components/ui/Button'
 import { AdminOnly } from '@/src/components/auth/ProtectedComponent'
+import { AddUserModal } from '@/src/components/admin/AddUserModal'
 import { toast } from 'sonner'
-import { User, Eye, EyeOff, Settings, Save, RefreshCw } from 'lucide-react'
+import { User, Eye, EyeOff, Settings, Save, RefreshCw, UserPlus } from 'lucide-react'
 
 interface GroupedPermissions {
   [category: string]: UIPermissionWithElement[]
@@ -19,6 +20,7 @@ export default function UserPermissionsPage() {
   const [permissions, setPermissions] = useState<UIPermissionWithElement[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [showAddUserModal, setShowAddUserModal] = useState(false)
   const supabase = createClient()
 
   useEffect(() => {
@@ -51,6 +53,10 @@ export default function UserPermissionsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleUserAdded = () => {
+    fetchUsers()
   }
 
   const fetchUserPermissions = async (userId: string) => {
@@ -206,28 +212,38 @@ export default function UserPermissionsPage() {
             </p>
           </div>
           
-          {selectedUser && (
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => fetchUserPermissions(selectedUser.id)}
-                disabled={loading}
-              >
-                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                Recarregar
-              </Button>
-              
-              <Button
-                variant="outline"
-                onClick={resetUserPermissions}
-                disabled={saving}
-                className="text-red-600 hover:text-red-700"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Resetar para Padrão
-              </Button>
-            </div>
-          )}
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowAddUserModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Adicionar Usuário
+            </Button>
+            
+            {selectedUser && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => fetchUserPermissions(selectedUser.id)}
+                  disabled={loading}
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                  Recarregar
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={resetUserPermissions}
+                  disabled={saving}
+                  className="text-red-600 hover:text-red-700"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Resetar para Padrão
+                </Button>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -383,6 +399,13 @@ export default function UserPermissionsPage() {
             )}
           </div>
         </div>
+
+        {/* Modal para Adicionar Usuários */}
+        <AddUserModal
+          isOpen={showAddUserModal}
+          onClose={() => setShowAddUserModal(false)}
+          onUserAdded={handleUserAdded}
+        />
       </div>
     </AdminOnly>
   )
