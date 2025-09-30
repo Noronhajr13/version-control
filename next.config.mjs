@@ -6,55 +6,70 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Otimizações gerais
   experimental: {
     optimizePackageImports: [
       'lucide-react',
       '@supabase/ssr', 
-      '@tanstack/react-query'
+      '@tanstack/react-query',
+      'react',
+      'react-dom'
     ],
   },
+
+  // Faster dev server
+  onDemandEntries: {
+    // Period (in ms) where the server will keep pages in the buffer
+    maxInactiveAge: 25 * 1000,
+    // Number of pages that should be kept simultaneously without being disposed
+    pagesBufferLength: 2,
+  },
+
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
       exclude: ['error', 'warn']
     } : false,
   },
   
-  // Tree shaking mais agressivo
-  webpack: (config, { dev, isServer }) => {
-    if (!dev && !isServer) {
-      // Otimizações para bundle client
-      config.optimization.usedExports = true
-      config.optimization.sideEffects = false
-      
-      // Chunk splitting otimizado
-      config.optimization.splitChunks = {
-        ...config.optimization.splitChunks,
-        cacheGroups: {
-          ...config.optimization.splitChunks.cacheGroups,
-          supabase: {
-            name: 'supabase',
-            test: /[\\/]node_modules[\\/]@supabase[\\/]/,
-            chunks: 'all',
-            priority: 10,
+  // Configurações condicionais baseadas no ambiente
+  ...(process.env.NODE_ENV === 'production' && {
+    // Tree shaking mais agressivo apenas em produção
+    webpack: (config, { dev, isServer }) => {
+      if (!dev && !isServer) {
+        // Otimizações para bundle client
+        config.optimization.usedExports = true
+        config.optimization.sideEffects = false
+        
+        // Chunk splitting otimizado
+        config.optimization.splitChunks = {
+          ...config.optimization.splitChunks,
+          cacheGroups: {
+            ...config.optimization.splitChunks.cacheGroups,
+            supabase: {
+              name: 'supabase',
+              test: /[\\/]node_modules[\\/]@supabase[\\/]/,
+              chunks: 'all',
+              priority: 10,
+            },
+            reactQuery: {
+              name: 'react-query',
+              test: /[\\/]node_modules[\\/]@tanstack[\\/]react-query[\\/]/,
+              chunks: 'all',
+              priority: 10,
+            },
+            lucide: {
+              name: 'lucide',
+              test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
+              chunks: 'all',
+              priority: 10,
+            },
           },
-          reactQuery: {
-            name: 'react-query',
-            test: /[\\/]node_modules[\\/]@tanstack[\\/]react-query[\\/]/,
-            chunks: 'all',
-            priority: 10,
-          },
-          lucide: {
-            name: 'lucide',
-            test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
-            chunks: 'all',
-            priority: 10,
-          },
-        },
+        }
       }
-    }
-    
-    return config
-  },
+      
+      return config
+    },
+  }),
 }
 
 export default withBundleAnalyzer(nextConfig)
