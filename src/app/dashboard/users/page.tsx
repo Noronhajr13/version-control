@@ -13,18 +13,14 @@ import { toast } from 'sonner'
 import { User, Shield, Clock, Mail, Building, UserPlus, BarChart3, RefreshCw } from 'lucide-react'
 
 const roleLabels: Record<UserRole, string> = {
-  super_admin: 'Super Admin',
   admin: 'Administrador', 
   manager: 'Gerente',
-  editor: 'Editor',
   viewer: 'Visualizador'
 }
 
 const roleColors: Record<UserRole, string> = {
-  super_admin: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
   admin: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
   manager: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  editor: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
   viewer: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
 }
 
@@ -137,11 +133,8 @@ export default function UsersManagementPage() {
   const canEditUser = (targetUser: UserProfile) => {
     if (!userProfile) return false
     
-    // Super admin pode editar qualquer um
-    if (userProfile.role === 'super_admin') return true
-    
-    // Admin pode editar todos exceto super admins
-    if (userProfile.role === 'admin' && targetUser.role !== 'super_admin') return true
+    // Admin pode editar qualquer um
+    if (userProfile.role === 'admin') return true
     
     return false
   }
@@ -336,11 +329,6 @@ export default function UsersManagementPage() {
               
               <div className="space-y-3">
                 {Object.entries(roleLabels).map(([role, label]) => {
-                  // Super admin só pode ser alterado por outro super admin
-                  if (role === 'super_admin' && userProfile?.role !== 'super_admin') {
-                    return null
-                  }
-                  
                   return (
                     <button
                       key={role}

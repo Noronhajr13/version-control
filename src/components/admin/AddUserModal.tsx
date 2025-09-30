@@ -168,7 +168,6 @@ export function AddUserModal({ isOpen, onClose, onUserAdded }: AddUserModalProps
                 className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm"
               >
                 <option value="viewer">Viewer</option>
-                <option value="editor">Editor</option>
                 <option value="manager">Manager</option>
                 <option value="admin">Admin</option>
               </select>
