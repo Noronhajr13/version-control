@@ -68,7 +68,7 @@ Ao analisar exemplos de código, se forem identificados potenciais gargalos de d
   - `src/components/ui/DownloadButton.tsx` - Download interativo com status
 - **Funcionalidades**:
   - Upload direto para Supabase Storage
-  - Validação de tipo (apenas ZIP) e tamanho (50MB max)
+  - Validação de tipo (apenas ZIP) e tamanho (250MB max)
   - Download seguro com feedback visual
   - Estados de loading/sucesso/erro
 

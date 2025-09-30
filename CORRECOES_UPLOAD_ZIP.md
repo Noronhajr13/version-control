@@ -33,7 +33,7 @@ const currentFile = (value && typeof value === 'object' && 'name' in value) ? va
 - Component `FileUploadZip` já funcionando
 - Upload direto para Supabase Storage
 - Validação de tipos (ZIP, RAR, 7Z)
-- Limite de 100MB
+- Limite de 250MB
 
 ### ✅ **Tela de Editar Versão:**
 - Substituído campo texto por upload

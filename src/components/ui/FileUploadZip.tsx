@@ -16,7 +16,7 @@ export function FileUploadZip({
   value,
   onChange,
   accept = '.zip,.rar,.7z',
-  maxSize = 50, // 50MB default
+  maxSize = 250, // 250MB default
   placeholder = 'Arraste o arquivo ZIP aqui ou clique para selecionar',
   disabled = false
 }: FileUploadZipProps) {

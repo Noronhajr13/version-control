@@ -342,7 +342,7 @@ export function NewVersionForm() {
                 value={zipFile}
                 onChange={setZipFile}
                 placeholder="Arraste o arquivo ZIP aqui ou clique para selecionar"
-                maxSize={100} // 100MB para arquivos de versão
+                maxSize={250} // 250MB para arquivos de versão
                 accept=".zip,.rar,.7z"
               />
             </div>

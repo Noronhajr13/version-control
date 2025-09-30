@@ -440,23 +440,17 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
                 Arquivo ZIP da Versão
               </label>
               <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                📦 Faça upload do arquivo ZIP contendo a versão compilada (máx. 50MB)
+                📦 Faça upload do arquivo ZIP contendo a versão compilada (máx. 250MB)
               </div>
-              <FileUploadZip
+                            <FileUploadZip
                 value={selectedFile || formData.file_path}
-                onChange={(file) => {
-                  setSelectedFile(file)
-                  // Se for um arquivo, deixamos para processar no submit
-                  // Se for string (URL existente), mantemos no formData
-                  if (typeof file === 'string') {
-                    setFormData({ ...formData, file_path: file })
-                  }
-                }}
-                accept=".zip,.rar,.7z"
-                maxSize={50 * 1024 * 1024} // 50MB
+                onChange={setSelectedFile}
+                maxSize={250} // 250MB
+                placeholder="Arraste o novo arquivo ZIP aqui ou clique para selecionar"
+                disabled={isLoading}
               />
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Formatos aceitos: ZIP, RAR, 7Z (máximo 50MB)
+                Formatos aceitos: ZIP, RAR, 7Z (máximo 250MB)
               </p>
             </div>
           </div>
