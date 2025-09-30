@@ -43,6 +43,8 @@ export function NewVersionForm() {
   })
   
   const [zipFile, setZipFile] = useState<File | null>(null)
+  const [fileOption, setFileOption] = useState<'upload' | 'sharepoint'>('upload')
+  const [sharepointLink, setSharepointLink] = useState('')
 
   // Status options para o select
   const statusOptions = [
@@ -104,9 +106,14 @@ export function NewVersionForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Validar arquivo ZIP obrigatório
-    if (!zipFile) {
+    // Validar arquivo ou link obrigatório
+    if (fileOption === 'upload' && !zipFile) {
       alert('Arquivo ZIP é obrigatório!')
+      return
+    }
+    
+    if (fileOption === 'sharepoint' && !sharepointLink.trim()) {
+      alert('Link do SharePoint é obrigatório!')
       return
     }
     
@@ -116,13 +123,17 @@ export function NewVersionForm() {
     try {
       let fileUrl = ''
       
-      // Upload do arquivo ZIP para o Supabase Storage
-      if (zipFile) {
+      // Determinar URL do arquivo baseado na opção escolhida
+      if (fileOption === 'upload' && zipFile) {
+        // Upload do arquivo ZIP para o Supabase Storage
         const fileName = `versions/${Date.now()}-${zipFile.name}`
         
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('version-files')
-          .upload(fileName, zipFile)
+          .upload(fileName, zipFile, {
+            cacheControl: '3600',
+            upsert: false
+          })
         
         if (uploadError) {
           throw new Error(`Erro no upload: ${uploadError.message}`)
@@ -134,6 +145,9 @@ export function NewVersionForm() {
           .getPublicUrl(fileName)
           
         fileUrl = publicUrl
+      } else if (fileOption === 'sharepoint' && sharepointLink) {
+        // Usar link do SharePoint
+        fileUrl = sharepointLink
       }
       
       // Criar a versão com a URL do arquivo
@@ -332,19 +346,78 @@ export function NewVersionForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Arquivo da Versão (ZIP) *
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Arquivo da Versão *
               </label>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                📦 Faça upload do arquivo ZIP da versão para download direto pelos clientes
+              
+              {/* Opções de arquivo */}
+              <div className="mb-4">
+                <div className="flex space-x-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="fileOption"
+                      value="upload"
+                      checked={fileOption === 'upload'}
+                      onChange={(e) => setFileOption(e.target.value as 'upload' | 'sharepoint')}
+                      className="mr-2"
+                    />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      📦 Upload de Arquivo ZIP
+                    </span>
+                  </label>
+                  
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="fileOption"
+                      value="sharepoint"
+                      checked={fileOption === 'sharepoint'}
+                      onChange={(e) => setFileOption(e.target.value as 'upload' | 'sharepoint')}
+                      className="mr-2"
+                    />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      🔗 Link do SharePoint
+                    </span>
+                  </label>
+                </div>
               </div>
-              <FileUploadZip
-                value={zipFile}
-                onChange={setZipFile}
-                placeholder="Arraste o arquivo ZIP aqui ou clique para selecionar"
-                maxSize={250} // 250MB para arquivos de versão
-                accept=".zip,.rar,.7z"
-              />
+
+              {/* Upload de arquivo */}
+              {fileOption === 'upload' && (
+                <div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    📦 Faça upload do arquivo ZIP da versão para download direto pelos clientes
+                  </div>
+                  <FileUploadZip
+                    value={zipFile}
+                    onChange={setZipFile}
+                    placeholder="Arraste o arquivo ZIP aqui ou clique para selecionar"
+                    maxSize={250} // 250MB para arquivos de versão
+                    accept=".zip,.rar,.7z"
+                  />
+                </div>
+              )}
+
+              {/* Link do SharePoint */}
+              {fileOption === 'sharepoint' && (
+                <div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    🔗 Cole o link direto do SharePoint para download do arquivo
+                  </div>
+                  <input
+                    type="url"
+                    value={sharepointLink}
+                    onChange={(e) => setSharepointLink(e.target.value)}
+                    placeholder="https://company.sharepoint.com/sites/.../arquivo.zip"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    required={fileOption === 'sharepoint'}
+                  />
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    💡 Dica: Use "Copiar link" no SharePoint para obter URL de download direto
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

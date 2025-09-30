@@ -17,6 +17,8 @@ const nextConfig = {
     ],
   },
 
+
+
   // Faster dev server
   onDemandEntries: {
     // Period (in ms) where the server will keep pages in the buffer

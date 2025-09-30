@@ -50,6 +50,8 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
 
   // Estado para o arquivo
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [fileOption, setFileOption] = useState<'upload' | 'sharepoint'>('upload')
+  const [sharepointLink, setSharepointLink] = useState('')
 
   // Status options para o select
   const statusOptions = [
@@ -123,6 +125,7 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
       }
 
       // Preencher formulário
+      const filePath = (versionData as any).file_path ?? ''
       setFormData({
         module_id: versionData.module_id,
         tag: versionData.tag,
@@ -131,11 +134,21 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
         release_date: versionData.release_date ?? '',
         scripts: (versionData as any).scripts ?? (versionData as any).script_executed ?? '',
         powerbuilder_version: (versionData as any).powerbuilder_version ?? '',
-        file_path: (versionData as any).file_path ?? '',
+        file_path: filePath,
         description: (versionData as any).description ?? '',
         status: (versionData as any).status ?? 'interna',
         data_generation: (versionData as any).data_generation ?? ''
       })
+
+      // Detectar se é link SharePoint ou arquivo uploadado
+      if (filePath) {
+        if (filePath.startsWith('http') || filePath.includes('sharepoint.com')) {
+          setFileOption('sharepoint')
+          setSharepointLink(filePath)
+        } else {
+          setFileOption('upload')
+        }
+      }
 
       // Preencher cards
       if (versionData.cards) {
@@ -190,8 +203,9 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     try {
       let updatedFormData = { ...formData }
 
-      // Se um novo arquivo foi selecionado, fazer upload
-      if (selectedFile) {
+      // Atualizar file_path baseado na opção escolhida
+      if (fileOption === 'upload' && selectedFile) {
+        // Upload de novo arquivo
         const fileExt = selectedFile.name.split('.').pop()
         const fileName = `${versionId}-${Date.now()}.${fileExt}`
         const filePath = `versions/${fileName}`
@@ -207,8 +221,15 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
           throw new Error(`Erro no upload: ${uploadError.message}`)
         }
 
-        // Atualizar o file_path com o caminho do arquivo uploadado
-        updatedFormData.file_path = filePath
+        // Obter URL pública do arquivo
+        const { data: { publicUrl } } = supabase.storage
+          .from('version-files')
+          .getPublicUrl(filePath)
+
+        updatedFormData.file_path = publicUrl
+      } else if (fileOption === 'sharepoint') {
+        // Usar link do SharePoint
+        updatedFormData.file_path = sharepointLink
       }
 
       // Atualizar a versão
@@ -436,22 +457,80 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Arquivo ZIP da Versão
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Arquivo da Versão
               </label>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                📦 Faça upload do arquivo ZIP contendo a versão compilada (máx. 250MB)
+              
+              {/* Opções de arquivo */}
+              <div className="mb-4">
+                <div className="flex space-x-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="fileOption"
+                      value="upload"
+                      checked={fileOption === 'upload'}
+                      onChange={(e) => setFileOption(e.target.value as 'upload' | 'sharepoint')}
+                      className="mr-2"
+                    />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      📦 Upload de Arquivo ZIP
+                    </span>
+                  </label>
+                  
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="fileOption"
+                      value="sharepoint"
+                      checked={fileOption === 'sharepoint'}
+                      onChange={(e) => setFileOption(e.target.value as 'upload' | 'sharepoint')}
+                      className="mr-2"
+                    />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      🔗 Link do SharePoint
+                    </span>
+                  </label>
+                </div>
               </div>
-                            <FileUploadZip
-                value={selectedFile || formData.file_path}
-                onChange={setSelectedFile}
-                maxSize={250} // 250MB
-                placeholder="Arraste o novo arquivo ZIP aqui ou clique para selecionar"
-                disabled={isLoading}
-              />
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Formatos aceitos: ZIP, RAR, 7Z (máximo 250MB)
-              </p>
+
+              {/* Upload de arquivo */}
+              {fileOption === 'upload' && (
+                <div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    📦 Faça upload do arquivo ZIP contendo a versão compilada (máx. 250MB)
+                  </div>
+                  <FileUploadZip
+                    value={selectedFile || (fileOption === 'upload' ? formData.file_path : null)}
+                    onChange={setSelectedFile}
+                    maxSize={250} // 250MB
+                    placeholder="Arraste o novo arquivo ZIP aqui ou clique para selecionar"
+                    disabled={isLoading}
+                  />
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Formatos aceitos: ZIP, RAR, 7Z (máximo 250MB)
+                  </p>
+                </div>
+              )}
+
+              {/* Link do SharePoint */}
+              {fileOption === 'sharepoint' && (
+                <div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    🔗 Cole o link direto do SharePoint para download do arquivo
+                  </div>
+                  <input
+                    type="url"
+                    value={sharepointLink}
+                    onChange={(e) => setSharepointLink(e.target.value)}
+                    placeholder="https://company.sharepoint.com/sites/.../arquivo.zip"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  />
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    💡 Dica: Use "Copiar link" no SharePoint para obter URL de download direto
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
