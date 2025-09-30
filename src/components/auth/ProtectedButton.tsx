@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useUIPermissions } from '@/src/hooks/useUIPermissions'
+import { useUIPermissions } from '@/src/contexts/AuthContext'
 import { Button } from '@/src/components/ui/Button'
 
 interface ProtectedButtonProps {

@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "next dev",
+    "dev:fast": "NODE_OPTIONS='--max-old-space-size=4096' next dev --turbo",
+    "dev:debug": "NODE_OPTIONS='--inspect' next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "analyze": "ANALYZE=true npm run build",
+    "analyze:server": "BUNDLE_ANALYZE=server npm run build",
+    "analyze:browser": "BUNDLE_ANALYZE=browser npm run build",
+    "clean": "./optimize-dev.sh",
+    "dev:optimized": "./optimize-dev.sh && npm run dev:fast"
+  }
+}

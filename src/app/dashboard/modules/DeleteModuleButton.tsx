@@ -5,7 +5,7 @@ import { createClient } from '@/src/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { DeleteAccess, useProtectedAction } from '@/src/components/auth/ProtectedComponent'
-import { RESOURCES, ACTIONS } from '@/src/hooks/usePermissions'
+import { RESOURCES, ACTIONS } from '@/src/contexts/AuthContext'
 
 export function DeleteModuleButton({ moduleId, moduleName }: { moduleId: string, moduleName: string }) {
   const router = useRouter()

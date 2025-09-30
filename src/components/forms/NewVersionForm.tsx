@@ -107,13 +107,18 @@ export function NewVersionForm() {
     e.preventDefault()
     
     // Validar arquivo ou link obrigatório
-    if (fileOption === 'upload' && !zipFile) {
-      alert('Arquivo ZIP é obrigatório!')
-      return
-    }
-    
-    if (fileOption === 'sharepoint' && !sharepointLink.trim()) {
-      alert('Link do SharePoint é obrigatório!')
+    if (fileOption === 'upload') {
+      if (!zipFile) {
+        alert('Arquivo ZIP é obrigatório quando a opção Upload está selecionada!')
+        return
+      }
+    } else if (fileOption === 'sharepoint') {
+      if (!sharepointLink.trim()) {
+        alert('Link do SharePoint é obrigatório quando esta opção está selecionada!')
+        return
+      }
+    } else {
+      alert('Selecione uma opção de arquivo!')
       return
     }
     
@@ -121,10 +126,13 @@ export function NewVersionForm() {
     setIsLoading(true)
 
     try {
+      console.log('Iniciando criação de versão...', { fileOption, hasZipFile: !!zipFile, sharepointLink })
+      
       let fileUrl = ''
       
       // Determinar URL do arquivo baseado na opção escolhida
       if (fileOption === 'upload' && zipFile) {
+        console.log('Fazendo upload do arquivo...')
         // Upload do arquivo ZIP para o Supabase Storage
         const fileName = `versions/${Date.now()}-${zipFile.name}`
         
@@ -145,16 +153,20 @@ export function NewVersionForm() {
           .getPublicUrl(fileName)
           
         fileUrl = publicUrl
+        console.log('Upload concluído, URL:', fileUrl)
       } else if (fileOption === 'sharepoint' && sharepointLink) {
+        console.log('Usando link do SharePoint:', sharepointLink)
         // Usar link do SharePoint
         fileUrl = sharepointLink
       }
       
+      console.log('Criando versão no banco de dados...')
       // Criar a versão com a URL do arquivo
       const versionDataToInsert = {
         ...formData,
         file_path: fileUrl, // Substituir exe_path por file_path
       }
+      console.log('Dados da versão:', versionDataToInsert)
       
       const { data: versionData, error: versionError } = await supabase
         .from('versions')
@@ -359,7 +371,13 @@ export function NewVersionForm() {
                       name="fileOption"
                       value="upload"
                       checked={fileOption === 'upload'}
-                      onChange={(e) => setFileOption(e.target.value as 'upload' | 'sharepoint')}
+                      onChange={(e) => {
+                        setFileOption(e.target.value as 'upload' | 'sharepoint')
+                        // Limpar link do SharePoint quando mudar para upload
+                        if (e.target.value === 'upload') {
+                          setSharepointLink('')
+                        }
+                      }}
                       className="mr-2"
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -373,7 +391,13 @@ export function NewVersionForm() {
                       name="fileOption"
                       value="sharepoint"
                       checked={fileOption === 'sharepoint'}
-                      onChange={(e) => setFileOption(e.target.value as 'upload' | 'sharepoint')}
+                      onChange={(e) => {
+                        setFileOption(e.target.value as 'upload' | 'sharepoint')
+                        // Limpar arquivo ZIP quando mudar para SharePoint
+                        if (e.target.value === 'sharepoint') {
+                          setZipFile(null)
+                        }
+                      }}
                       className="mr-2"
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -396,6 +420,15 @@ export function NewVersionForm() {
                     maxSize={250} // 250MB para arquivos de versão
                     accept=".zip,.rar,.7z"
                   />
+                  {zipFile && (
+                    <button
+                      type="button"
+                      onClick={() => setZipFile(null)}
+                      className="mt-2 text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                      🗑️ Remover arquivo selecionado
+                    </button>
+                  )}
                 </div>
               )}
 

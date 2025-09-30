@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/src/hooks/useAuth'
+import { useAuth } from '@/src/contexts/AuthContext'
 import { useAuthFallback } from '@/src/hooks/useAuthFallback'
 import { createClient } from '@/src/lib/supabase/client'
 import { useEffect, useState } from 'react'
@@ -63,7 +63,7 @@ export default function DiagnosticPage() {
             checkResults.userProfileError = String(e)
           }
 
-          // 4. Verificar se o usuário existe no auth.users (via RPC)
+          // 4. Verificar se a função RPC existe (opcional)
           try {
             const { data: authData, error: authError } = await supabase
               .rpc('get_user_with_permissions', { user_id_param: auth.user.id })
@@ -73,6 +73,7 @@ export default function DiagnosticPage() {
             checkResults.rpcError = authError?.message
           } catch (e) {
             checkResults.rpcWorks = false
+            checkResults.rpcError = 'RPC function not available (this is OK - using direct queries instead)'
             checkResults.rpcError = String(e)
           }
         }

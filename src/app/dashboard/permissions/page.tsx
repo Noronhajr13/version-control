@@ -66,11 +66,20 @@ export default function UserPermissionsPage() {
       const { data, error } = await supabase
         .rpc('get_user_ui_permissions', { user_id_param: userId })
 
-      if (error) throw error
-      setPermissions(data || [])
+      if (error) {
+        console.warn('RPC get_user_ui_permissions not available:', error)
+        // Fallback: criar permissões básicas
+        setPermissions([])
+        toast.info('Sistema de permissões não disponível, usando configuração básica')
+        return
+      }
+      
+      // Garantir que data é um array
+      setPermissions(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Error fetching permissions:', error)
       toast.error('Erro ao carregar permissões do usuário')
+      setPermissions([]) // Fallback para array vazio
     } finally {
       setLoading(false)
     }

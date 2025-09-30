@@ -3,16 +3,16 @@ import { Inter } from 'next/font/google'
 import './global.css'
 import { Toaster } from 'sonner'
 import QueryProvider from '../lib/react-query/QueryProvider'
-import { AuthProvider } from '@/src/contexts/AuthContext'
+import { SimpleAuthProvider } from '@/src/contexts/SimpleAuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Controle de Versões',
-  description: 'Sistema de controle de versões de produtos',
+  title: 'Controle de Versões - Modo Simples',
+  description: 'Sistema de controle de versões (modo de debug)',
 }
 
-export default function RootLayout({
+export default function SimpleRootLayout({
   children,
 }: {
   children: React.ReactNode
@@ -20,12 +20,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={inter.className}>
-        <AuthProvider>
+        <SimpleAuthProvider>
           <QueryProvider>
             {children}
             <Toaster position="top-right" />
           </QueryProvider>
-        </AuthProvider>
+        </SimpleAuthProvider>
       </body>
     </html>
   )

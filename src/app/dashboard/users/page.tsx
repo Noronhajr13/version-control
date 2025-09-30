@@ -8,7 +8,7 @@ import { Button } from '@/src/components/ui/Button'
 import { Badge } from '@/src/components/ui/Badge'
 import { AdminOnly } from '@/src/components/auth/ProtectedComponent'
 import { AddUserModal } from '@/src/components/admin/AddUserModal'
-import { useAuth } from '@/src/hooks/useAuth'
+import { useAuth } from '@/src/contexts/AuthContext'
 import { toast } from 'sonner'
 import { User, Shield, Clock, Mail, Building, UserPlus, BarChart3, RefreshCw } from 'lucide-react'
 
@@ -62,15 +62,25 @@ export default function UsersManagementPage() {
 
   const fetchUserStats = async () => {
     try {
+      console.log('Fetching user stats...')
       const { data, error } = await supabase
         .rpc('get_user_stats')
         .single()
 
       if (error) {
-        console.warn('Error fetching user stats:', error)
+        console.warn('Error fetching user stats (function may not exist):', error)
+        // Criar stats básicas como fallback
+        const fallbackStats = {
+          total_auth_users: users.length,
+          total_profiles: users.length,
+          active_profiles: users.filter(u => u.is_active).length,
+          unregistered_users: 0
+        }
+        setUserStats(fallbackStats)
         return
       }
 
+      console.log('User stats fetched successfully')
       setUserStats(data as any)
     } catch (error) {
       console.warn('Error in fetchUserStats:', error)

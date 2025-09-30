@@ -197,6 +197,17 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Validação baseada na opção escolhida
+    if (fileOption === 'upload' && !selectedFile && !formData.file_path) {
+      alert('Selecione um arquivo ZIP ou mantenha o arquivo atual!')
+      return
+    }
+    
+    if (fileOption === 'sharepoint' && !sharepointLink.trim()) {
+      alert('Link do SharePoint é obrigatório quando esta opção está selecionada!')
+      return
+    }
+    
     const loadingToast = ErrorManager.showLoading('Atualizando versão...')
     setIsLoading(true)
 
@@ -470,7 +481,13 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
                       name="fileOption"
                       value="upload"
                       checked={fileOption === 'upload'}
-                      onChange={(e) => setFileOption(e.target.value as 'upload' | 'sharepoint')}
+                      onChange={(e) => {
+                        setFileOption(e.target.value as 'upload' | 'sharepoint')
+                        // Limpar link do SharePoint quando mudar para upload
+                        if (e.target.value === 'upload') {
+                          setSharepointLink('')
+                        }
+                      }}
                       className="mr-2"
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -484,7 +501,13 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
                       name="fileOption"
                       value="sharepoint"
                       checked={fileOption === 'sharepoint'}
-                      onChange={(e) => setFileOption(e.target.value as 'upload' | 'sharepoint')}
+                      onChange={(e) => {
+                        setFileOption(e.target.value as 'upload' | 'sharepoint')
+                        // Limpar arquivo selecionado quando mudar para SharePoint
+                        if (e.target.value === 'sharepoint') {
+                          setSelectedFile(null)
+                        }
+                      }}
                       className="mr-2"
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -507,6 +530,18 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
                     placeholder="Arraste o novo arquivo ZIP aqui ou clique para selecionar"
                     disabled={isLoading}
                   />
+                  {(selectedFile || formData.file_path) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedFile(null)
+                        // Não limpar formData.file_path aqui para não perder o arquivo atual
+                      }}
+                      className="mt-2 text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                      🗑️ Remover arquivo selecionado
+                    </button>
+                  )}
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     Formatos aceitos: ZIP, RAR, 7Z (máximo 250MB)
                   </p>

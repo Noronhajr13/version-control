@@ -18,6 +18,13 @@ export default function ModulesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const customToast = useCustomToast()
 
+  // Debug log para identificar re-renders
+  console.log('ModulesPage render:', { 
+    modulesCount: modules.length, 
+    isLoading, 
+    hasError: !!error 
+  })
+
   // Filter modules based on search
   const filteredModules = useMemo(() => {
     if (!searchTerm) return modules

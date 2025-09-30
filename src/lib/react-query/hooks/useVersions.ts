@@ -8,6 +8,7 @@ export const useVersions = () => {
   return useQuery({
     queryKey: ['versions'],
     queryFn: async () => {
+      console.log('Fetching versions from database...')
       const { data, error } = await supabase
         .from('versions')
         .select(`
@@ -20,8 +21,14 @@ export const useVersions = () => {
         throw new Error(error.message)
       }
 
+      console.log('Versions fetched:', data?.length || 0)
       return data || []
     },
+    staleTime: 2 * 60 * 1000, // 2 minutos
+    gcTime: 5 * 60 * 1000, // 5 minutos
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   })
 }
 
@@ -62,17 +69,28 @@ export const useModules = () => {
   return useQuery({
     queryKey: ['modules'],
     queryFn: async () => {
+      console.log('🔄 MODULES: Fetching from database...', new Date().toLocaleTimeString())
       const { data, error } = await supabase
         .from('modules')
         .select('*')
         .order('name')
 
       if (error) {
+        console.error('❌ MODULES: Error fetching:', error)
         throw new Error(error.message)
       }
 
+      console.log('✅ MODULES: Fetched successfully:', data?.length || 0, 'items')
       return data || []
     },
+    staleTime: 10 * 60 * 1000, // 10 minutos (mais agressivo)
+    gcTime: 30 * 60 * 1000, // 30 minutos
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    notifyOnChangeProps: ['data', 'error'], // Otimização extra
   })
 }
 
@@ -83,6 +101,7 @@ export const useClients = () => {
   return useQuery({
     queryKey: ['clients'],
     queryFn: async () => {
+      console.log('Fetching clients from database...')
       const { data, error } = await supabase
         .from('clients')
         .select('*')
@@ -92,8 +111,14 @@ export const useClients = () => {
         throw new Error(error.message)
       }
 
+      console.log('Clients fetched:', data?.length || 0)
       return data || []
     },
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    gcTime: 10 * 60 * 1000, // 10 minutos
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   })
 }
 

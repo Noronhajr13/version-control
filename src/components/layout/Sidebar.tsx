@@ -15,8 +15,7 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/src/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { usePermissions } from '@/src/hooks/usePermissions'
-import { useUIPermissions } from '@/src/hooks/useUIPermissions'
+import { usePermissions, useUIPermissions } from '@/src/contexts/AuthContext'
 import { ProtectedComponent } from '@/src/components/auth/ProtectedComponent'
 
 const menuItems = [

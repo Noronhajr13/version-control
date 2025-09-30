@@ -1,7 +1,7 @@
 'use client'
 
 import React, { ReactNode } from 'react'
-import { usePermissions, RESOURCES, ACTIONS } from '@/src/hooks/usePermissions'
+import { usePermissions, RESOURCES, ACTIONS } from '@/src/contexts/AuthContext'
 import { UserRole } from '@/src/lib/types/database'
 import { Card } from '@/src/components/ui/Card'
 
