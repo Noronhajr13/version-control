@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { Plus, Trash2, Loader2 } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { ErrorManager } from '@/src/lib/utils/errorHandler'
+import { FileUploadZip } from '@/src/components/ui/FileUploadZip'
 
 export default function EditVersionPage({ params }: { params: Promise<{ id: string }> }) {
   const [versionId, setVersionId] = useState('')
@@ -29,7 +30,7 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     release_date: string
     scripts: string
     powerbuilder_version: string
-    exe_path: string
+    file_path: string
     description: string
     status: 'interna' | 'teste' | 'homologacao' | 'producao' | 'deprecated'
     data_generation: string
@@ -41,11 +42,14 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     release_date: '',
     scripts: '',
     powerbuilder_version: '',
-    exe_path: '',
+    file_path: '',
     description: '',
     status: 'interna',
     data_generation: ''
   })
+
+  // Estado para o arquivo
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   // Status options para o select
   const statusOptions = [
@@ -127,7 +131,7 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
         release_date: versionData.release_date ?? '',
         scripts: (versionData as any).scripts ?? (versionData as any).script_executed ?? '',
         powerbuilder_version: (versionData as any).powerbuilder_version ?? '',
-        exe_path: (versionData as any).exe_path ?? '',
+        file_path: (versionData as any).file_path ?? '',
         description: (versionData as any).description ?? '',
         status: (versionData as any).status ?? 'interna',
         data_generation: (versionData as any).data_generation ?? ''
@@ -184,10 +188,33 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
     setIsLoading(true)
 
     try {
+      let updatedFormData = { ...formData }
+
+      // Se um novo arquivo foi selecionado, fazer upload
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop()
+        const fileName = `${versionId}-${Date.now()}.${fileExt}`
+        const filePath = `versions/${fileName}`
+
+        const { error: uploadError } = await supabase.storage
+          .from('version-files')
+          .upload(filePath, selectedFile, {
+            cacheControl: '3600',
+            upsert: false
+          })
+
+        if (uploadError) {
+          throw new Error(`Erro no upload: ${uploadError.message}`)
+        }
+
+        // Atualizar o file_path com o caminho do arquivo uploadado
+        updatedFormData.file_path = filePath
+      }
+
       // Atualizar a versão
       const { error: versionError } = await supabase
         .from('versions')
-        .update(formData)
+        .update(updatedFormData)
         .eq('id', versionId)
 
       if (versionError) throw versionError
@@ -410,15 +437,27 @@ export default function EditVersionPage({ params }: { params: Promise<{ id: stri
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Link do EXE (SharePoint)
+                Arquivo ZIP da Versão
               </label>
-              <input
-                type="url"
-                placeholder="Ex: https://sharepoint.com/sites/app/exe/app.exe"
-                value={formData.exe_path}
-                onChange={(e) => setFormData({ ...formData, exe_path: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                📦 Faça upload do arquivo ZIP contendo a versão compilada (máx. 50MB)
+              </div>
+              <FileUploadZip
+                value={selectedFile || formData.file_path}
+                onChange={(file) => {
+                  setSelectedFile(file)
+                  // Se for um arquivo, deixamos para processar no submit
+                  // Se for string (URL existente), mantemos no formData
+                  if (typeof file === 'string') {
+                    setFormData({ ...formData, file_path: file })
+                  }
+                }}
+                accept=".zip,.rar,.7z"
+                maxSize={50 * 1024 * 1024} // 50MB
               />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Formatos aceitos: ZIP, RAR, 7Z (máximo 50MB)
+              </p>
             </div>
           </div>
 

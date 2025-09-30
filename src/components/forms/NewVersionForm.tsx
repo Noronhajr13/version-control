@@ -8,6 +8,7 @@ import { Plus, Trash2 } from '@/src/components/ui/icons'
 import { useCreateVersion } from '@/src/lib/react-query/hooks/useVersions'
 import { useQueryClient } from '@tanstack/react-query'
 import { ErrorManager } from '@/src/lib/utils/errorHandler'
+import { FileUploadZip } from '@/src/components/ui/FileUploadZip'
 
 // Removido supabaseOperation - usando cliente diretamente
 
@@ -40,6 +41,8 @@ export function NewVersionForm() {
     status: 'interna' as 'interna' | 'testes' | 'producao',
     data_generation: ''
   })
+  
+  const [zipFile, setZipFile] = useState<File | null>(null)
 
   // Status options para o select
   const statusOptions = [
@@ -101,14 +104,47 @@ export function NewVersionForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Validar arquivo ZIP obrigatório
+    if (!zipFile) {
+      alert('Arquivo ZIP é obrigatório!')
+      return
+    }
+    
     const loadingToast = ErrorManager.showLoading('Criando versão...')
     setIsLoading(true)
 
     try {
-      // Criar a versão
+      let fileUrl = ''
+      
+      // Upload do arquivo ZIP para o Supabase Storage
+      if (zipFile) {
+        const fileName = `versions/${Date.now()}-${zipFile.name}`
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('version-files')
+          .upload(fileName, zipFile)
+        
+        if (uploadError) {
+          throw new Error(`Erro no upload: ${uploadError.message}`)
+        }
+        
+        // Obter URL pública do arquivo
+        const { data: { publicUrl } } = supabase.storage
+          .from('version-files')
+          .getPublicUrl(fileName)
+          
+        fileUrl = publicUrl
+      }
+      
+      // Criar a versão com a URL do arquivo
+      const versionDataToInsert = {
+        ...formData,
+        file_path: fileUrl, // Substituir exe_path por file_path
+      }
+      
       const { data: versionData, error: versionError } = await supabase
         .from('versions')
-        .insert([formData])
+        .insert([versionDataToInsert])
         .select()
         .single()
 
@@ -297,14 +333,17 @@ export function NewVersionForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Link do EXE (SharePoint)
+                Arquivo da Versão (ZIP) *
               </label>
-              <input
-                type="url"
-                placeholder="Ex: https://sharepoint.com/sites/app/exe/app.exe"
-                value={formData.exe_path}
-                onChange={(e) => setFormData({ ...formData, exe_path: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+              <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                📦 Faça upload do arquivo ZIP da versão para download direto pelos clientes
+              </div>
+              <FileUploadZip
+                value={zipFile}
+                onChange={setZipFile}
+                placeholder="Arraste o arquivo ZIP aqui ou clique para selecionar"
+                maxSize={100} // 100MB para arquivos de versão
+                accept=".zip,.rar,.7z"
               />
             </div>
           </div>
