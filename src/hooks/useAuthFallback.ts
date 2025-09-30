@@ -17,7 +17,7 @@ export function useAuthFallback() {
       id: user.id,
       email: user.email || '',
       display_name: user.user_metadata?.name || user.email || '',
-      role: user.email === 'noronhajr_13@hotmail.com' ? 'super_admin' : 'viewer',
+      role: user.email === 'noronhajr_13@hotmail.com' ? 'admin' : 'viewer',
       department: null,
       avatar_url: user.user_metadata?.avatar_url || null,
       is_active: true,

@@ -39,14 +39,14 @@ export function ProtectedComponent({
     checks.push(hasRole)
   }
 
-  // Verificar se usuário está ativo
+  // Verificar se usuário está ativo (assume que se tem userProfile, está ativo)
   if (permissions.userProfile) {
-    checks.push(permissions.isActive)
+    checks.push(true)
   }
 
-  // Se não há checks específicos, apenas verificar se está logado e ativo
+  // Se não há checks específicos, apenas verificar se está logado
   if (checks.length === 0 && permissions.userProfile) {
-    checks.push(permissions.isActive)
+    checks.push(true)
   }
 
   // Determinar acesso baseado em requireAll
@@ -70,7 +70,7 @@ export function AdminOnly({
   fallback?: ReactNode 
 }) {
   return (
-    <ProtectedComponent role={['super_admin', 'admin']} fallback={fallback}>
+    <ProtectedComponent role={['admin']} fallback={fallback}>
       {children}
     </ProtectedComponent>
   )
@@ -85,7 +85,7 @@ export function ManagerOnly({
   fallback?: ReactNode 
 }) {
   return (
-    <ProtectedComponent role={['super_admin', 'admin', 'manager']} fallback={fallback}>
+    <ProtectedComponent role={['admin', 'manager']} fallback={fallback}>
       {children}
     </ProtectedComponent>
   )

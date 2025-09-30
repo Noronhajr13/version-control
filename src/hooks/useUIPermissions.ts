@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/src/lib/supabase/client'
 import { useAuth } from './useAuth'
-import { UIPermissionWithElement } from '@/src/lib/types/database'
 
 interface UIPermissions {
   [elementKey: string]: {
@@ -33,30 +32,11 @@ export function useUIPermissions() {
     try {
       setLoading(true)
       
-      // Usar a função RPC para buscar permissões de UI
-      const { data, error } = await supabase
-        .rpc('get_user_ui_permissions', { user_id_param: userProfile.id })
-
-      if (error) {
-        console.error('Error fetching UI permissions:', error)
-        // Fallback para permissões padrão baseadas na role
-        setPermissions(getDefaultPermissionsByRole(userProfile.role))
-        return
-      }
-
-      // Converter array de permissões em objeto indexado
-      const permissionsMap: UIPermissions = {}
+      // Usar permissões padrão baseadas na role por enquanto
+      // TODO: Implementar sistema de permissões de UI no banco futuramente
+      const defaultPermissions = getDefaultPermissionsByRole(userProfile.role)
+      setPermissions(defaultPermissions)
       
-      if (data) {
-        data.forEach((perm: UIPermissionWithElement) => {
-          permissionsMap[perm.element_key] = {
-            visible: perm.is_visible,
-            enabled: perm.is_enabled
-          }
-        })
-      }
-
-      setPermissions(permissionsMap)
     } catch (error) {
       console.error('Error in fetchUIPermissions:', error)
       // Fallback para permissões padrão
@@ -70,8 +50,8 @@ export function useUIPermissions() {
   const isVisible = (elementKey: string): boolean => {
     if (!userProfile) return false
     
-    // Super admin tem acesso total
-    if (userProfile.role === 'super_admin') return true
+    // Admin tem acesso total
+    if (userProfile.role === 'admin') return true
     
     // Verificar permissão específica
     if (permissions[elementKey]) {
@@ -86,8 +66,8 @@ export function useUIPermissions() {
   const isEnabled = (elementKey: string): boolean => {
     if (!userProfile) return false
     
-    // Super admin tem acesso total
-    if (userProfile.role === 'super_admin') return true
+    // Admin tem acesso total
+    if (userProfile.role === 'admin') return true
     
     // Elemento precisa estar visível para estar habilitado
     if (!isVisible(elementKey)) return false
@@ -159,24 +139,13 @@ function getDefaultPermissionsByRole(role: string): UIPermissions {
 
 // Função auxiliar para verificar permissão padrão individual
 function getDefaultPermissionForElement(role: string, elementKey: string, type: 'visible' | 'enabled'): boolean {
-  // Super admin tem acesso total
-  if (role === 'super_admin') return true
-  
-  // Admin tem acesso quase total
+  // Admin tem acesso total
   if (role === 'admin') return true
   
   // Manager - sem deletar e sem usuários
   if (role === 'manager') {
     if (elementKey.includes('delete')) return false
     if (elementKey === 'sidebar_users') return false
-    return true
-  }
-  
-  // Editor - sem deletar, sem usuários, sem auditoria
-  if (role === 'editor') {
-    if (elementKey.includes('delete')) return false
-    if (elementKey === 'sidebar_users') return false
-    if (elementKey === 'sidebar_audit') return false
     return true
   }
   

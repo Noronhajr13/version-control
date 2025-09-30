@@ -30,7 +30,8 @@ const menuItems = [
 
 const adminMenuItems = [
   { href: '/dashboard/users', label: 'Usuários', icon: Shield, elementKey: 'sidebar_users' },
-  { href: '/dashboard/permissions', label: 'Permissões UI', icon: Settings, elementKey: 'sidebar_permissions' }
+  { href: '/dashboard/permissions', label: 'Permissões UI', icon: Settings, elementKey: 'sidebar_permissions' },
+  { href: '/dashboard/database-analysis', label: 'Análise DB', icon: Settings, elementKey: 'sidebar_db_analysis' }
 ]
 
 export function Sidebar() {
@@ -108,7 +109,7 @@ export function Sidebar() {
         {menuItems.map(renderMenuItem)}
         
         {/* Menu Admin */}
-        <ProtectedComponent role={['super_admin', 'admin']}>
+        <ProtectedComponent role={['admin']}>
           <div className="border-t border-gray-200 dark:border-gray-700 mt-4 pt-4">
             <div className="px-6 py-2">
               <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">

@@ -19,204 +19,166 @@ export const ACTIONS = {
   READ: 'read',
   UPDATE: 'update',
   DELETE: 'delete',
-  MANAGE: 'manage', // Ação especial para gerenciamento completo
+  MANAGE: 'manage',
   EXPORT: 'export'
 } as const
 
 type Resource = typeof RESOURCES[keyof typeof RESOURCES]
 type Action = typeof ACTIONS[keyof typeof ACTIONS]
 
-// Mapa de permissões padrão por role
+// Mapa de permissões padrão por role (sistema simplificado - 3 roles)
 const DEFAULT_PERMISSIONS: Record<UserRole, Record<string, boolean>> = {
-  super_admin: {
-    // Super admin tem acesso total a tudo
-    '*': true
-  },
   admin: {
-    // Admin tem acesso total exceto gerenciar super admins
-    [`${RESOURCES.VERSIONS}_${ACTIONS.CREATE}`]: true,
-    [`${RESOURCES.VERSIONS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.VERSIONS}_${ACTIONS.UPDATE}`]: true,
-    [`${RESOURCES.VERSIONS}_${ACTIONS.DELETE}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.CREATE}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.UPDATE}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.DELETE}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.CREATE}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.UPDATE}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.DELETE}`]: true,
-    [`${RESOURCES.AUDIT}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.AUDIT}_${ACTIONS.EXPORT}`]: true,
-    [`${RESOURCES.USERS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.USERS}_${ACTIONS.MANAGE}`]: true,
-    [`${RESOURCES.REPORTS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.REPORTS}_${ACTIONS.EXPORT}`]: true,
+    // Admin tem acesso total a tudo
+    'versions_create': true,
+    'versions_read': true,
+    'versions_update': true,
+    'versions_delete': true,
+    'clients_create': true,
+    'clients_read': true,
+    'clients_update': true,
+    'clients_delete': true,
+    'modules_create': true,
+    'modules_read': true,
+    'modules_update': true,
+    'modules_delete': true,
+    'audit_read': true,
+    'audit_export': true,
+    'users_create': true,
+    'users_read': true,
+    'users_update': true,
+    'users_delete': true,
+    'users_manage': true,
+    'reports_read': true,
+    'reports_export': true,
   },
   manager: {
-    // Manager pode criar, ler e editar, mas não deletar
-    [`${RESOURCES.VERSIONS}_${ACTIONS.CREATE}`]: true,
-    [`${RESOURCES.VERSIONS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.VERSIONS}_${ACTIONS.UPDATE}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.CREATE}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.UPDATE}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.CREATE}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.UPDATE}`]: true,
-    [`${RESOURCES.AUDIT}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.USERS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.REPORTS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.REPORTS}_${ACTIONS.EXPORT}`]: true,
-  },
-  editor: {
-    // Editor pode criar, ler e editar (exceto usuários)
-    [`${RESOURCES.VERSIONS}_${ACTIONS.CREATE}`]: true,
-    [`${RESOURCES.VERSIONS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.VERSIONS}_${ACTIONS.UPDATE}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.CREATE}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.UPDATE}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.CREATE}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.UPDATE}`]: true,
-    [`${RESOURCES.REPORTS}_${ACTIONS.READ}`]: true,
+    // Manager pode criar, ler e editar, mas não deletar nem gerenciar usuários
+    'versions_create': true,
+    'versions_read': true,
+    'versions_update': true,
+    'versions_delete': false,
+    'clients_create': true,
+    'clients_read': true,
+    'clients_update': true,
+    'clients_delete': false,
+    'modules_create': true,
+    'modules_read': true,
+    'modules_update': true,
+    'modules_delete': false,
+    'audit_read': true,
+    'audit_export': false,
+    'users_create': false,
+    'users_read': false,
+    'users_update': false,
+    'users_delete': false,
+    'users_manage': false,
+    'reports_read': true,
+    'reports_export': true,
   },
   viewer: {
-    // Viewer pode apenas visualizar
-    [`${RESOURCES.VERSIONS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.CLIENTS}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.MODULES}_${ACTIONS.READ}`]: true,
-    [`${RESOURCES.REPORTS}_${ACTIONS.READ}`]: true,
+    // Viewer só pode visualizar
+    'versions_create': false,
+    'versions_read': true,
+    'versions_update': false,
+    'versions_delete': false,
+    'clients_create': false,
+    'clients_read': true,
+    'clients_update': false,
+    'clients_delete': false,
+    'modules_create': false,
+    'modules_read': true,
+    'modules_update': false,
+    'modules_delete': false,
+    'audit_read': false,
+    'audit_export': false,
+    'users_create': false,
+    'users_read': false,
+    'users_update': false,
+    'users_delete': false,
+    'users_manage': false,
+    'reports_read': true,
+    'reports_export': false,
   }
 }
 
 export function usePermissions() {
-  const { userProfile, role, permissions: userPermissions } = useAuth()
+  const { userProfile } = useAuth()
+  
+  const role = userProfile?.role || null
 
+  // Função para verificar permissão específica
   const hasPermission = (resource: Resource, action: Action): boolean => {
-    // Se não está autenticado
-    if (!userProfile || !role) {
-      return false
-    }
-
-    // Se usuário está inativo
-    if (!userProfile.is_active) {
-      return false
-    }
-
-    // Super admin tem acesso total
-    if (role === 'super_admin') {
-      return true
-    }
-
-    // Verificar permissão específica do usuário primeiro
-    const specificPermission = userPermissions[`${resource}_${action}`]
-    if (specificPermission !== undefined) {
-      return specificPermission
-    }
-
-    // Verificar permissões padrão da role
-    const defaultPermissions = DEFAULT_PERMISSIONS[role] || {}
-    return defaultPermissions[`${resource}_${action}`] || false
+    if (!role) return false
+    
+    // Admin tem acesso total
+    if (role === 'admin') return true
+    
+    const permissionKey = `${resource}_${action}`
+    const rolePermissions = DEFAULT_PERMISSIONS[role]
+    
+    return rolePermissions?.[permissionKey] ?? false
   }
 
-  const canCreate = (resource: Resource) => hasPermission(resource, ACTIONS.CREATE)
-  const canRead = (resource: Resource) => hasPermission(resource, ACTIONS.READ)
-  const canUpdate = (resource: Resource) => hasPermission(resource, ACTIONS.UPDATE)
-  const canDelete = (resource: Resource) => hasPermission(resource, ACTIONS.DELETE)
-  const canManage = (resource: Resource) => hasPermission(resource, ACTIONS.MANAGE)
-  const canExport = (resource: Resource) => hasPermission(resource, ACTIONS.EXPORT)
-
-  // Helpers específicos para recursos comuns
-  const versions = {
-    create: () => canCreate(RESOURCES.VERSIONS),
-    read: () => canRead(RESOURCES.VERSIONS),
-    update: () => canUpdate(RESOURCES.VERSIONS),
-    delete: () => canDelete(RESOURCES.VERSIONS)
+  // Função para verificar múltiplas permissões
+  const hasAnyPermission = (permissions: Array<{ resource: Resource; action: Action }>): boolean => {
+    return permissions.some(({ resource, action }) => hasPermission(resource, action))
   }
 
-  const clients = {
-    create: () => canCreate(RESOURCES.CLIENTS),
-    read: () => canRead(RESOURCES.CLIENTS),
-    update: () => canUpdate(RESOURCES.CLIENTS),
-    delete: () => canDelete(RESOURCES.CLIENTS)
+  // Função para verificar se pode acessar recurso (ao menos leitura)
+  const canAccess = (resource: Resource): boolean => {
+    return hasPermission(resource, ACTIONS.READ)
   }
 
-  const modules = {
-    create: () => canCreate(RESOURCES.MODULES),
-    read: () => canRead(RESOURCES.MODULES),
-    update: () => canUpdate(RESOURCES.MODULES),
-    delete: () => canDelete(RESOURCES.MODULES)
+  // Função para verificar se pode modificar recurso
+  const canModify = (resource: Resource): boolean => {
+    return hasAnyPermission([
+      { resource, action: ACTIONS.CREATE },
+      { resource, action: ACTIONS.UPDATE },
+      { resource, action: ACTIONS.DELETE }
+    ])
   }
 
-  const audit = {
-    read: () => canRead(RESOURCES.AUDIT),
-    export: () => canExport(RESOURCES.AUDIT)
-  }
-
-  const users = {
-    read: () => canRead(RESOURCES.USERS),
-    manage: () => canManage(RESOURCES.USERS)
-  }
-
-  const reports = {
-    read: () => canRead(RESOURCES.REPORTS),
-    export: () => canExport(RESOURCES.REPORTS)
-  }
-
-  // Helpers para roles
-  const isSuperAdmin = () => role === 'super_admin'
-  const isAdmin = () => role === 'admin' || isSuperAdmin()
+  // Helpers para roles específicas
+  const isAdmin = () => role === 'admin'
   const isManager = () => role === 'manager' || isAdmin()
-  const isEditor = () => role === 'editor' || isManager()
-  const isViewer = () => role === 'viewer' || isEditor()
+  const isViewer = () => role === 'viewer'
+
+  // Helpers para verificações específicas
+  const canManageUsers = () => hasPermission(RESOURCES.USERS, ACTIONS.MANAGE)
+  const canExportData = () => {
+    return hasAnyPermission([
+      { resource: RESOURCES.AUDIT, action: ACTIONS.EXPORT },
+      { resource: RESOURCES.REPORTS, action: ACTIONS.EXPORT }
+    ])
+  }
+
+  // Verificar se pode deletar qualquer recurso
+  const canDelete = (resource: Resource) => hasPermission(resource, ACTIONS.DELETE)
 
   return {
-    // Função genérica
-    hasPermission,
-    
-    // Ações genéricas
-    canCreate,
-    canRead,
-    canUpdate,
-    canDelete,
-    canManage,
-    canExport,
-    
-    // Recursos específicos
-    versions,
-    clients,
-    modules,
-    audit,
-    users,
-    reports,
-    
-    // Role helpers
-    isSuperAdmin,
-    isAdmin,
-    isManager,
-    isEditor,
-    isViewer,
-    
-    // Dados do usuário
+    // Estado
     role,
     userProfile,
-    isActive: userProfile?.is_active || false
+    
+    // Verificações de permissão
+    hasPermission,
+    hasAnyPermission,
+    canAccess,
+    canModify,
+    canDelete,
+    
+    // Helpers de role
+    isAdmin,
+    isManager, 
+    isViewer,
+    
+    // Verificações específicas
+    canManageUsers,
+    canExportData,
+    
+    // Recursos e ações disponíveis
+    RESOURCES,
+    ACTIONS
   }
-}
-
-// Helper para usar em componentes - renderização condicional
-export function useConditionalRender() {
-  const permissions = usePermissions()
-  
-  const renderIf = (
-    condition: boolean | (() => boolean),
-    component: React.ReactNode
-  ) => {
-    const shouldRender = typeof condition === 'function' ? condition() : condition
-    return shouldRender ? component : null
-  }
-  
-  return { renderIf, ...permissions }
 }
