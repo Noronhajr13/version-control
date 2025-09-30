@@ -349,7 +349,10 @@ export interface Database {
 
 // Exported types for convenience
 export type VersionStatus = 'interna' | 'teste' | 'homologacao' | 'producao' | 'deprecated'
-export type UserRole = 'super_admin' | 'admin' | 'manager' | 'editor' | 'viewer'
+export type UserRole = 'admin' | 'manager' | 'viewer'
+
+// Legacy type for migration compatibility
+export type UserRoleLegacy = 'super_admin' | 'admin' | 'manager' | 'editor' | 'viewer'
 
 export interface UserProfile {
   id: string
