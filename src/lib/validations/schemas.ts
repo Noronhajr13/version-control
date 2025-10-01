@@ -44,19 +44,8 @@ export const versionSchema = z.object({
     .optional()
     .refine((val: string | undefined) => !val || val.length <= 5000, 'Scripts deve ter no máximo 5000 caracteres'),
   powerbuilder_version: z.string()
-    .optional()
-    .refine((val: string | undefined) => !val || val.length <= 100, 'Versão PowerBuilder deve ter no máximo 100 caracteres'),
-  exe_path: z.string()
-    .optional()
-    .refine((val: string | undefined) => {
-      if (!val) return true
-      try {
-        new URL(val)
-        return true
-      } catch {
-        return false
-      }
-    }, 'Link do EXE deve ser uma URL válida'),
+    .min(1, 'PowerBuilder version é obrigatória')
+    .max(50, 'PowerBuilder version muito longa'),
   description: z.string()
     .min(10, 'Descrição deve ter pelo menos 10 caracteres')
     .max(2000, 'Descrição deve ter no máximo 2000 caracteres'),

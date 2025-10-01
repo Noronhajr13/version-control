@@ -186,7 +186,7 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
               </div>
 
               <div>
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Link do EXE (SharePoint)</dt>
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Link do Arquivo (SharePoint)</dt>
                 <dd className="mt-1 text-sm">
                   {(version as any).file_path ? (
                     <a 

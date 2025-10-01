@@ -49,7 +49,7 @@ export interface Database {
           release_date: string | null
           scripts: string | null
           powerbuilder_version: string | null
-          exe_path: string | null
+          file_path: string | null
           status: 'interna' | 'teste' | 'homologacao' | 'producao' | 'deprecated' | null
           data_generation: string | null
           created_at: string
@@ -64,7 +64,7 @@ export interface Database {
           release_date?: string | null
           scripts?: string | null
           powerbuilder_version?: string | null
-          exe_path?: string | null
+          file_path?: string | null
           status?: 'interna' | 'teste' | 'homologacao' | 'producao' | 'deprecated' | null
           data_generation?: string | null
           created_at?: string
@@ -79,7 +79,7 @@ export interface Database {
           release_date?: string | null
           scripts?: string | null
           powerbuilder_version?: string | null
-          exe_path?: string | null
+          file_path?: string | null
           status?: 'interna' | 'teste' | 'homologacao' | 'producao' | 'deprecated' | null
           data_generation?: string | null
           created_at?: string

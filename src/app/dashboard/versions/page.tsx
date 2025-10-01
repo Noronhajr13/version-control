@@ -368,21 +368,21 @@ export default function VersionsPage() {
                                       </div>
                                     </div>
 
-                                    {/* Link EXE */}
+                                    {/* Link Arquivo */}
                                     <div>
-                                      <div className="text-xs text-gray-500 dark:text-gray-400">Link EXE</div>
-                                      {version.exe_path ? (
+                                      <div className="text-xs text-gray-500 dark:text-gray-400">Link Arquivo</div>
+                                      {version.file_path ? (
                                         <a 
-                                          href={version.exe_path}
+                                          href={version.file_path}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="text-blue-600 dark:text-blue-400 hover:underline flex items-center text-sm"
                                         >
-                                          <ExternalLink className="w-3 h-3 mr-1" />
-                                          Abrir
+                                          <ExternalLink className="w-4 h-4 mr-1" />
+                                          Baixar Arquivo
                                         </a>
                                       ) : (
-                                        <span className="text-sm text-gray-400">-</span>
+                                        <span className="text-gray-400 text-sm">Não disponível</span>
                                       )}
                                     </div>
 

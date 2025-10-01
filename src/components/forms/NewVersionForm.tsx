@@ -36,7 +36,7 @@ export function NewVersionForm() {
     release_date: '',
     scripts: '',
     powerbuilder_version: '',
-    exe_path: '',
+    file_path: '',
     description: '',
     status: 'interna' as 'interna' | 'testes' | 'producao',
     data_generation: ''
@@ -164,7 +164,7 @@ export function NewVersionForm() {
       // Criar a versão com a URL do arquivo
       const versionDataToInsert = {
         ...formData,
-        file_path: fileUrl, // Substituir exe_path por file_path
+        file_path: fileUrl,
       }
       console.log('Dados da versão:', versionDataToInsert)
       
