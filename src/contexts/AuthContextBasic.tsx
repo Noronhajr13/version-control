@@ -48,7 +48,7 @@ interface AuthContextType {
   updateMenuConfig: (config: MenuConfig) => Promise<void>
   
   // Basic actions
-  refreshProfile: () => Promise<void>
+  refreshProfile: () => void
   signOut: () => Promise<void>
 }
 
@@ -66,31 +66,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const mounted = useRef(true)
 
   // ==================== PROFILE CREATION ====================
-  const createBasicProfile = async (user: User): Promise<BasicUserProfile> => {
-    // Sempre criar perfil admin para simplicidade e segurança
+  const createBasicProfile = (user: User): BasicUserProfile => {
+    // SOLUÇÃO DIRETA: Perfil instantâneo, sem await
     const profile: BasicUserProfile = {
       id: user.id,
       email: user.email || '',
-      display_name: user.email?.split('@')[0] || 'Usuário',
-      role: 'admin', // Sempre admin para evitar problemas
+      display_name: user.email?.split('@')[0] || 'Admin',
+      role: 'admin', // SEMPRE admin
       is_active: true
     }
 
-    // Tentar salvar no banco (sem quebrar se falhar)
-    try {
-      await supabase
-        .from('user_profiles')
-        .upsert({
-          id: profile.id,
-          email: profile.email,
-          display_name: profile.display_name,
-          role: profile.role,
-          is_active: profile.is_active,
-          updated_at: new Date().toISOString()
-        })
-    } catch (error) {
-      console.warn('⚠️ Não foi possível salvar perfil no banco, usando local:', error)
-    }
+    console.log('✅ [AuthBasic] Perfil criado INSTANTANEAMENTE:', profile.display_name)
+
+    // Salvar no banco em background (não bloquear)
+    setTimeout(async () => {
+      try {
+        await supabase
+          .from('user_profiles')
+          .upsert({
+            id: profile.id,
+            email: profile.email,
+            display_name: profile.display_name,
+            role: profile.role,
+            is_active: profile.is_active,
+            updated_at: new Date().toISOString()
+          })
+        console.log('✅ Perfil salvo no banco (background)')
+      } catch (err) {
+        console.warn('⚠️ Erro background:', err)
+      }
+    }, 0)
 
     return profile
   }
@@ -114,11 +119,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const refreshProfile = async (): Promise<void> => {
+  const refreshProfile = (): void => {
     if (!user) return
     
     try {
-      const profile = await createBasicProfile(user)
+      const profile = createBasicProfile(user)
       setUserProfile(profile)
     } catch (error) {
       console.error('❌ Erro ao atualizar perfil:', error)
@@ -161,7 +166,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(user)
         
         if (user) {
-          const profile = await createBasicProfile(user)
+          const profile = createBasicProfile(user)
           setUserProfile(profile)
           console.log('✅ [AuthBasic] Perfil criado:', profile.display_name, profile.role)
         }
@@ -186,7 +191,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(newUser)
       
       if (newUser) {
-        const profile = await createBasicProfile(newUser)
+        const profile = createBasicProfile(newUser)
         setUserProfile(profile)
         console.log('✅ [AuthBasic] Perfil atualizado:', profile.display_name)
       } else {

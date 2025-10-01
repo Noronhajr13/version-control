@@ -15,10 +15,16 @@ export default function DashboardLayout({
   const router = useRouter()
 
   useEffect(() => {
-    console.log('🚀 Dashboard Layout - Auth State:', { user: !!user, loading })
+    console.log('🚀 Dashboard Layout - Auth State:', { 
+      user: !!user, 
+      userEmail: user?.email,
+      profile: !!userProfile,
+      loading 
+    })
+    
     if (!loading && !user) {
-      console.log('🔄 Redirecting to login...')
-      router.push('/auth/login')
+      console.log('🔄 No user found, redirecting to login...')
+      window.location.href = '/auth/login'
     }
   }, [user, loading, router])
 

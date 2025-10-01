@@ -7,6 +7,7 @@ import { ValidatedInput } from '@/components/ui/ValidatedInput'
 import { ErrorManager } from '@/lib/utils/errorHandler'
 import { authSchema } from '@/lib/validations/schemas'
 
+
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: '',
@@ -77,16 +78,22 @@ export default function LoginPage() {
         
         ErrorManager.showSuccessMessage('create', 'Conta criada! Verifique seu email para confirmar')
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         })
         
         if (error) throw error
         
+        console.log('✅ Login realizado:', data.user?.email)
+        
+        // Aguardar um momento para o contexto de auth atualizar
+        await new Promise(resolve => setTimeout(resolve, 500))
+        
         ErrorManager.showSuccessMessage('login', 'Login realizado com sucesso!')
-        router.push('/dashboard')
-        router.refresh()
+        
+        // Forçar redirecionamento
+        window.location.href = '/dashboard'
       }
     } catch (error) {
       ErrorManager.handleGenericError(error)
@@ -169,6 +176,8 @@ export default function LoginPage() {
           </div>
         </form>
       </div>
+      
+
     </div>
   )
 }
