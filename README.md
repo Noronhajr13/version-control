@@ -1,42 +1,67 @@
-# Supabase CLI
+# 🚀 Sistema de Controle de Versões
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
-](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+Sistema web moderno para gerenciamento de versões, módulos e clientes, construído com Next.js 15 e Supabase.
 
-[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
+## 📋 Sobre o Projeto
 
-This repository contains all the functionality for Supabase CLI.
+Este sistema oferece uma interface intuitiva para controle de versões de software, com recursos avançados de gerenciamento de módulos, clientes e relatórios. Desenvolvido com as melhores práticas de desenvolvimento web moderno.
 
-- [x] Running Supabase locally
-- [x] Managing database migrations
-- [x] Creating and deploying Supabase Functions
-- [x] Generating types directly from your database schema
-- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
+## ✨ Funcionalidades
 
-## Getting started
+- [x] Sistema de autenticação completo
+- [x] Gerenciamento de módulos e versões
+- [x] Controle de clientes e permissões
+- [x] Dashboard com métricas e relatórios
+- [x] Interface responsiva e moderna
+- [x] Integração completa com Supabase
 
-### Install the CLI
+## 🚀 Início Rápido
 
-Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
+### Pré-requisitos
+- Node.js 18+ 
+- NPM ou Yarn
+- Conta no Supabase
+
+### Instalação
 
 ```bash
-npm i supabase --save-dev
+# Clone o repositório
+git clone https://github.com/Noronhajr13/version-control.git
+
+# Instale as dependências
+npm install
+
+# Configure o ambiente
+cp .env.example .env.local
+# Edite .env.local com suas credenciais do Supabase
+
+# Execute em desenvolvimento
+npm run dev
 ```
 
-To install the beta release channel:
+## 📚 Documentação
 
-```bash
-npm i supabase@beta --save-dev
-```
+A documentação completa está organizada na pasta [`docs/`](./docs/):
 
-When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
+- **[Setup](./docs/setup/)** - Configuração inicial do projeto
+  - [Database Setup](./docs/setup/database-setup.md) - Configuração do Supabase
+  - [Email Confirmation](./docs/setup/email-confirmation.md) - Setup de confirmação de email
+  - [Workflow](./docs/setup/workflow.md) - Fluxo de trabalho Git
 
-```
-NODE_OPTIONS=--no-experimental-fetch yarn add supabase
-```
+- **[Development](./docs/development/)** - Documentação de desenvolvimento
+  - [Migration AuthContext](./docs/development/migration-authcontext.md) - Sistema de autenticação
+  - [Error Reports](./docs/development/error-reports.md) - Soluções para problemas comuns
 
-> **Note**
-For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
+- **[Dev Tools](./dev/)** - Ferramentas de desenvolvimento e debug
+
+## 🛠️ Tecnologias
+
+- **Frontend:** Next.js 15, React 18, TypeScript
+- **Styling:** Tailwind CSS
+- **Backend:** Supabase (PostgreSQL)
+- **Auth:** Supabase Auth
+- **Charts:** Recharts
+- **Forms:** React Hook Form + Zod
 
 <details>
   <summary><b>macOS</b></summary>
