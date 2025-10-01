@@ -26,8 +26,8 @@ const menuItems = [
 ]
 
 const adminMenuItems = [
-  { href: '/dashboard/users', label: 'Usuários', icon: Shield },
-  { href: '/diagnostico', label: 'Diagnóstico', icon: Shield }
+  { href: '/dashboard/users', label: 'Usuários', icon: Shield }
+  // Páginas de diagnóstico movidas para dev/ - acessar diretamente pela URL em desenvolvimento
 ]
 
 export function SidebarFallback() {
