@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/src/components/ui/Button';
-import { Card } from '@/src/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface DatabaseMapping {

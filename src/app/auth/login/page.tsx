@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/src/lib/supabase/client'
-import { ValidatedInput } from '@/src/components/ui/ValidatedInput'
-import { ErrorManager } from '@/src/lib/utils/errorHandler'
-import { authSchema } from '@/src/lib/validations/schemas'
+import { createClient } from '@/lib/supabase/client'
+import { ValidatedInput } from '@/components/ui/ValidatedInput'
+import { ErrorManager } from '@/lib/utils/errorHandler'
+import { authSchema } from '@/lib/validations/schemas'
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({

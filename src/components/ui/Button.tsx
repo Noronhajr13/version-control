@@ -1,8 +1,8 @@
 'use client'
 
 import { ButtonHTMLAttributes, forwardRef } from 'react'
-import { Loader2 } from '@/src/components/ui/icons'
-import { cn } from '@/src/utils/cn'
+import { Loader2 } from '@/components/ui/icons'
+import { cn } from '@/utils/cn'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost'

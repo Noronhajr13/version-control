@@ -12,9 +12,9 @@ import {
   LogOut,
   Shield
 } from 'lucide-react'
-import { createClient } from '@/src/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/src/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContextBasic'
 
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },

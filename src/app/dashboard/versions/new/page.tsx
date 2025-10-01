@@ -2,12 +2,12 @@
 
 import { Suspense, lazy } from 'react'
 import Link from 'next/link'
-import { FormSkeleton } from '@/src/components/ui/Skeletons'
-import { LazyErrorBoundary } from '@/src/components/ui/LazyErrorBoundary'
+import { FormSkeleton } from '@/components/ui/Skeletons'
+import { LazyErrorBoundary } from '@/components/ui/LazyErrorBoundary'
 
 // Lazy load do formulário pesado
 const NewVersionForm = lazy(() => 
-  import('@/src/components/forms/NewVersionForm').then(module => ({
+  import('@/components/forms/NewVersionForm').then(module => ({
     default: module.NewVersionForm
   }))
 )

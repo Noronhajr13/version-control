@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/src/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
-import { UserWithPermissions } from '@/src/lib/types/database'
+import { UserWithPermissions } from '@/lib/types/database'
 
 // Cache para evitar múltiplas requisições iguais no fallback
 const fallbackProfileCache = new Map<string, { data: UserWithPermissions | null, timestamp: number }>()

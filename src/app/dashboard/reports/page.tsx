@@ -1,12 +1,12 @@
 'use client'
 
 import { Suspense, lazy } from 'react'
-import { TableSkeleton } from '@/src/components/ui/Skeletons'
-import { LazyErrorBoundary } from '@/src/components/ui/LazyErrorBoundary'
+import { TableSkeleton } from '@/components/ui/Skeletons'
+import { LazyErrorBoundary } from '@/components/ui/LazyErrorBoundary'
 
 // Lazy load dos relatórios
 const ReportsContent = lazy(() => 
-  import('@/src/components/reports/ReportsContent').then(module => ({
+  import('@/components/reports/ReportsContent').then(module => ({
     default: module.ReportsContent
   }))
 )

@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
-import type { Database } from '@/src/lib/types/database'
+import type { Database } from '@/lib/types/database'
 import Link from 'next/link'
 import { useQueryClient } from '@tanstack/react-query'
-import { ValidatedInput } from '@/src/components/ui/ValidatedInput'
-import { ValidatedSelect } from '@/src/components/ui/ValidatedSelect'
-import { ErrorManager } from '@/src/lib/utils/errorHandler'
-import { clientSchema, BRAZILIAN_STATES } from '@/src/lib/validations/schemas'
+import { ValidatedInput } from '@/components/ui/ValidatedInput'
+import { ValidatedSelect } from '@/components/ui/ValidatedSelect'
+import { ErrorManager } from '@/lib/utils/errorHandler'
+import { clientSchema, BRAZILIAN_STATES } from '@/lib/validations/schemas'
 
 const UF_OPTIONS = BRAZILIAN_STATES.map(uf => ({
   value: uf,

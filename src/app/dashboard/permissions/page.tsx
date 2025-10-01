@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@/src/lib/supabase/client'
-import { UserProfile, UIPermissionWithElement } from '@/src/lib/types/database'
-import { Card } from '@/src/components/ui/Card'
-import { Button } from '@/src/components/ui/Button'
-import { AdminOnly } from '@/src/components/auth/ProtectedComponent'
-import { AddUserModal } from '@/src/components/admin/AddUserModal'
+import { createClient } from '@/lib/supabase/client'
+import { UserProfile, UIPermissionWithElement } from '@/lib/types/database'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { AdminOnly } from '@/components/auth/SimpleProtectedComponent'
+import { AddUserModal } from '@/components/admin/AddUserModal'
 import { toast } from 'sonner'
 import { User, Eye, EyeOff, Settings, Save, RefreshCw, UserPlus } from 'lucide-react'
 

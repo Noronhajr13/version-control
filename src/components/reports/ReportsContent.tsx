@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@/src/lib/supabase/client'
-import type { Database } from '@/src/lib/types/database'
+import { createClient } from '@/lib/supabase/client'
+import type { Database } from '@/lib/types/database'
 import { FileText, Users, Package } from 'lucide-react'
 
 export function ReportsContent() {

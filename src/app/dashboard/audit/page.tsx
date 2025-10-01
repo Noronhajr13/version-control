@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/Card'
-import { Badge } from '@/src/components/ui/Badge'
-import { Button } from '@/src/components/ui/Button'
-import { Input } from '@/src/components/ui/Input'
-import { EmptyState } from '@/src/components/ui/EmptyState'
-import { useAuditLogs, useAuditStats, useAuditDashboard } from '@/src/hooks/useAudit'
-import type { AuditFilters } from '@/src/lib/types/audit'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { EmptyState } from '@/components/ui/EmptyState'
+import { useAuditLogs, useAuditStats, useAuditDashboard } from '@/hooks/useAudit'
+import type { AuditFilters, AuditLogWithUserInfo } from '@/lib/types/audit'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { 
@@ -238,7 +238,7 @@ export default function AuditPage() {
             />
           ) : (
             <div className="space-y-4">
-              {auditData?.data.map((log) => (
+              {auditData?.data.map((log: AuditLogWithUserInfo) => (
                 <div key={log.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex items-start gap-4">
                     <div className="mt-1">

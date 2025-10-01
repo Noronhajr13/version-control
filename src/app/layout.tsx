@@ -3,13 +3,13 @@ import { Inter } from 'next/font/google'
 import './global.css'
 import { Toaster } from 'sonner'
 import QueryProvider from '../lib/react-query/QueryProvider'
-import { AuthProvider } from '@/src/contexts/AuthContext'
+import { AuthProvider } from '@/contexts/AuthContextBasic'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Controle de Versões',
-  description: 'Sistema de controle de versões de produtos',
+  description: 'Sistema de controle de versões de software',
 }
 
 export default function RootLayout({

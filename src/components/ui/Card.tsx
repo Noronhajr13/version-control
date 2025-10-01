@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/src/utils/cn'
+import { cn } from '@/utils/cn'
 
 interface CardProps {
   className?: string

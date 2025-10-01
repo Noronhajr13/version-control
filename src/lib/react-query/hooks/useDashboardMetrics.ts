@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { createClient } from '@/src/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { startOfMonth, endOfMonth, format, subMonths } from 'date-fns'
 
 export interface DashboardMetrics {

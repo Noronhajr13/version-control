@@ -1,6 +1,6 @@
 'use client'
 
-import { useSimpleAuth } from '@/src/contexts/SimpleAuthContext'
+import { useAuth } from '@/contexts/AuthContextBasic'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
@@ -9,7 +9,7 @@ export default function SimpleDashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { user, loading, signOut } = useSimpleAuth()
+  const { user, loading, signOut } = useAuth()
   const router = useRouter()
 
   useEffect(() => {

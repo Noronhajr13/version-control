@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { Search, Plus, Edit, Trash2, Copy, Eye, Download, Upload } from 'lucide-react'
-import { useKeyboardShortcuts } from '@/src/hooks/useKeyboardShortcuts'
-import { useCustomToast } from '@/src/hooks/useCustomToast'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+import { useCustomToast } from '@/hooks/useCustomToast'
 
 interface QuickAction {
   id: string

@@ -1,9 +1,12 @@
 'use client'
 
-import { useModules } from '@/src/lib/react-query/hooks'
+import { useModules } from '@/lib/react-query/hooks'
 import Link from 'next/link'
-import { Edit } from '@/src/components/ui/icons'
-import { DeleteModuleButton } from './DeleteModuleButton'
+import { Edit } from '@/components/ui/icons'
+import DeleteModuleButton from '@/app/modules/DeleteModuleButton'
+import type { Database } from '@/lib/types/database'
+
+type Module = Database['public']['Tables']['modules']['Row']
 
 export default function ModulesTable() {
   const { data: modules = [], error, isLoading } = useModules()
@@ -41,17 +44,12 @@ export default function ModulesTable() {
           </tr>
         </thead>
         <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-          {modules?.map((module) => (
+          {modules?.map((module: Module) => (
             <tr key={module.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                   {module.name}
                 </div>
-                {module.description && (
-                  <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {module.description}
-                  </div>
-                )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                 {new Date(module.created_at).toLocaleDateString('pt-BR')}

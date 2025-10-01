@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import type { Database } from '@/src/lib/types/database'
+import type { Database } from '@/lib/types/database'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 import Link from 'next/link'
 import { Plus, Trash2, Loader2 } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
-import { ErrorManager } from '@/src/lib/utils/errorHandler'
-import { FileUploadZip } from '@/src/components/ui/FileUploadZip'
+import { ErrorManager } from '@/lib/utils/errorHandler'
+import { FileUploadZip } from '@/components/ui/FileUploadZip'
 
 export default function EditVersionPage({ params }: { params: Promise<{ id: string }> }) {
   const [versionId, setVersionId] = useState('')

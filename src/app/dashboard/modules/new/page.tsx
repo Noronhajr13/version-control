@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
-import type { Database } from '@/src/lib/types/database'
+import type { Database } from '@/lib/types/database'
 import Link from 'next/link'
 import { useQueryClient } from '@tanstack/react-query'
-import { ValidatedInput } from '@/src/components/ui/ValidatedInput'
-import { ErrorManager } from '@/src/lib/utils/errorHandler'
-import { moduleSchema } from '@/src/lib/validations/schemas'
+import { ValidatedInput } from '@/components/ui/ValidatedInput'
+import { ErrorManager } from '@/lib/utils/errorHandler'
+import { moduleSchema } from '@/lib/validations/schemas'
 
 export default function NewModulePage() {
   const [formData, setFormData] = useState({

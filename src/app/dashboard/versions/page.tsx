@@ -1,15 +1,15 @@
 'use client'
 
-import { useVersions, useDeleteVersion } from '@/src/lib/react-query/hooks'
-import { useBulkSelection } from '@/src/hooks/useBulkSelection'
-import { useKeyboardShortcuts } from '@/src/hooks/useKeyboardShortcuts'
+import { useVersions, useDeleteVersion } from '@/lib/react-query/hooks'
+import { useBulkSelection } from '@/hooks/useBulkSelection'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import Link from 'next/link'
 import { Plus, Eye, Edit, Search, ExternalLink, Package, Code, ChevronDown, ChevronRight } from 'lucide-react'
-import { BulkActionsBar } from '@/src/components/ui/BulkActionsBar'
-import { SelectionCheckbox } from '@/src/components/ui/SelectionCheckbox'
-import { KeyboardShortcutsHelp } from '@/src/components/ui/KeyboardShortcutsHelp'
-import { QuickActions } from '@/src/components/ui/QuickActions'
-import { useCustomToast } from '@/src/hooks/useCustomToast'
+import { BulkActionsBar } from '@/components/ui/BulkActionsBar'
+import { SelectionCheckbox } from '@/components/ui/SelectionCheckbox'
+import { KeyboardShortcutsHelp } from '@/components/ui/KeyboardShortcutsHelp'
+import { QuickActions } from '@/components/ui/QuickActions'
+import { useCustomToast } from '@/hooks/useCustomToast'
 import { useState, useMemo } from 'react'
 
 // Force dynamic rendering

@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Button } from '@/src/components/ui/Button';
-import { Card } from '@/src/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 
 export default function DatabaseAnalysisPage() {
   const [results, setResults] = useState<any>(null);

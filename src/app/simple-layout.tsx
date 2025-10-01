@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google'
 import './global.css'
 import { Toaster } from 'sonner'
 import QueryProvider from '../lib/react-query/QueryProvider'
-import { SimpleAuthProvider } from '@/src/contexts/SimpleAuthContext'
+import { SimpleAuthProvider } from '@/contexts/SimpleAuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
 

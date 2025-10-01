@@ -2,9 +2,9 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react'
-import { createClient } from '@/src/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
-import { UserWithPermissions, UserRole } from '@/src/lib/types/database'
+import { UserWithPermissions, UserRole } from '@/lib/types/database'
 
 // ==================== RECURSOS E AÇÕES ====================
 export const RESOURCES = {

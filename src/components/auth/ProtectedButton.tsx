@@ -1,11 +1,10 @@
 'use client'
 
 import React from 'react'
-import { useUIPermissions } from '@/src/contexts/AuthContext'
-import { Button } from '@/src/components/ui/Button'
+import { useBasicPermissions } from '@/contexts/AuthContextBasic'
+import { Button } from '@/components/ui/Button'
 
-interface ProtectedButtonProps {
-  elementKey: string
+interface SimpleProtectedButtonProps {
   children: React.ReactNode
   onClick?: () => void
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
@@ -13,11 +12,12 @@ interface ProtectedButtonProps {
   className?: string
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
-  fallbackType?: 'hide' | 'disable' // Se esconde ou apenas desabilita quando sem permissão
+  adminOnly?: boolean
+  managerOrAdmin?: boolean
+  fallbackType?: 'hide' | 'disable'
 }
 
 export function ProtectedButton({
-  elementKey,
   children,
   onClick,
   variant = 'primary',
@@ -25,89 +25,56 @@ export function ProtectedButton({
   className = '',
   disabled = false,
   type = 'button',
-  fallbackType = 'hide',
-  ...props
-}: ProtectedButtonProps) {
-  const { isVisible, isEnabled } = useUIPermissions()
+  adminOnly = false,
+  managerOrAdmin = false,
+  fallbackType = 'hide'
+}: SimpleProtectedButtonProps) {
+  const { isAdmin, isManager } = useBasicPermissions()
 
-  // Se não tem permissão de visualização e tipo é 'hide', não renderiza nada
-  if (!isVisible(elementKey) && fallbackType === 'hide') {
+  // Verificar permissões
+  let hasPermission = true
+  
+  if (adminOnly) {
+    hasPermission = isAdmin()
+  } else if (managerOrAdmin) {
+    hasPermission = isManager() || isAdmin()
+  }
+
+  // Se não tem permissão e deve esconder
+  if (!hasPermission && fallbackType === 'hide') {
     return null
   }
 
-  // Se não tem permissão de visualização e tipo é 'disable', mostra desabilitado
-  const shouldBeDisabled = disabled || !isEnabled(elementKey) || !isVisible(elementKey)
+  // Se não tem permissão e deve desabilitar
+  const isDisabled = disabled || (!hasPermission && fallbackType === 'disable')
 
   return (
     <Button
+      onClick={onClick}
       variant={variant}
       size={size}
       className={className}
-      disabled={shouldBeDisabled}
-      onClick={onClick}
+      disabled={isDisabled}
       type={type}
-      {...props}
     >
       {children}
     </Button>
   )
 }
 
-// Componente específico para ações de CRUD
-interface CRUDButtonProps {
-  action: 'create' | 'edit' | 'delete'
-  resource: string
-  children: React.ReactNode
-  onClick?: () => void
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
-  size?: 'sm' | 'md' | 'lg'
-  className?: string
-  disabled?: boolean
-  fallbackType?: 'hide' | 'disable'
+// Componentes especializados
+export function CreateButton(props: Omit<SimpleProtectedButtonProps, 'managerOrAdmin'>) {
+  return <ProtectedButton {...props} managerOrAdmin />
 }
 
-export function CRUDButton({
-  action,
-  resource,
-  children,
-  onClick,
-  variant,
-  size = 'sm',
-  className = '',
-  disabled = false,
-  fallbackType = 'hide',
-  ...props
-}: CRUDButtonProps) {
-  // Gerar a chave do elemento baseada na ação e recurso
-  const elementKey = `button_${action}_${resource}`
-  
-  // Definir variante padrão baseada na ação
-  const defaultVariant = action === 'delete' ? 'outline' : 'primary'
-  
-  return (
-    <ProtectedButton
-      elementKey={elementKey}
-      variant={variant || defaultVariant}
-      size={size}
-      className={`${className} ${action === 'delete' ? 'text-red-600 hover:text-red-700 border-red-300 hover:border-red-400' : ''}`}
-      disabled={disabled}
-      onClick={onClick}
-      fallbackType={fallbackType}
-      {...props}
-    >
-      {children}
-    </ProtectedButton>
-  )
+export function EditButton(props: Omit<SimpleProtectedButtonProps, 'managerOrAdmin'>) {
+  return <ProtectedButton {...props} managerOrAdmin />
 }
 
-// Hook para verificar permissões em componentes que não renderizam botões
-export function useElementPermissions(elementKey: string) {
-  const { isVisible, isEnabled } = useUIPermissions()
-  
-  return {
-    isVisible: isVisible(elementKey),
-    isEnabled: isEnabled(elementKey),
-    canShow: isVisible(elementKey),
-    canInteract: isVisible(elementKey) && isEnabled(elementKey)
-  }
+export function DeleteButton(props: Omit<SimpleProtectedButtonProps, 'adminOnly'>) {
+  return <ProtectedButton {...props} adminOnly />
+}
+
+export function AdminButton(props: Omit<SimpleProtectedButtonProps, 'adminOnly'>) {
+  return <ProtectedButton {...props} adminOnly />
 }

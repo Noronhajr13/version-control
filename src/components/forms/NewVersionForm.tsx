@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/src/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import { Plus, Trash2 } from '@/src/components/ui/icons'
-import { useCreateVersion } from '@/src/lib/react-query/hooks/useVersions'
+import { Plus, Trash2 } from '@/components/ui/icons'
+import { useCreateVersion } from '@/lib/react-query/hooks/useVersions'
 import { useQueryClient } from '@tanstack/react-query'
-import { ErrorManager } from '@/src/lib/utils/errorHandler'
-import { FileUploadZip } from '@/src/components/ui/FileUploadZip'
+import { ErrorManager } from '@/lib/utils/errorHandler'
+import { FileUploadZip } from '@/components/ui/FileUploadZip'
 
 // Removido supabaseOperation - usando cliente diretamente
 

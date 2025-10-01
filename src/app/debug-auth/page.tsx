@@ -1,11 +1,11 @@
 'use client'
 
-import { useAuth } from '@/src/contexts/AuthContext'
-import { createClient } from '@/src/lib/supabase/client'
+import { useAuth } from '@/contexts/AuthContextBasic'
+import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
 
 export default function DebugAuthPage() {
-  const { user, loading, userProfile } = useAuth()
+  const { user, loading, role } = useAuth()
   const [supabaseUser, setSupabaseUser] = useState<any>(null)
   const [supabaseLoading, setSupabaseLoading] = useState(true)
 
@@ -38,11 +38,11 @@ export default function DebugAuthPage() {
                   <p><strong>ID:</strong> {user.id}</p>
                 </>
               )}
-              <p><strong>Profile:</strong> {userProfile ? '✅ Carregado' : '❌ Não carregado'}</p>
-              {userProfile && (
+              <p><strong>Profile:</strong> {role ? '✅ Carregado' : '❌ Não carregado'}</p>
+              {role && (
                 <>
-                  <p><strong>Role:</strong> {userProfile.role}</p>
-                  <p><strong>Display Name:</strong> {userProfile.display_name || 'N/A'}</p>
+                  <p><strong>Role:</strong> {role}</p>
+                  <p><strong>Display Name:</strong> {user?.email || 'N/A'}</p>
                 </>
               )}
             </div>

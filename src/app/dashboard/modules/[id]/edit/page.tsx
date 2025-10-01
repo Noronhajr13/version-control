@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
-import type { Database } from '@/src/lib/types/database'
+import type { Database } from '@/lib/types/database'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useQueryClient } from '@tanstack/react-query'

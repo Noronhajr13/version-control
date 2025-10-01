@@ -4,11 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Users, Package, Calendar, Download, Edit, Trash2, Plus, MapPin, Building2 } from 'lucide-react';
 import Link from 'next/link';
-import { Badge } from '@/src/components/ui/Badge';
-import { Card } from '@/src/components/ui/Card';
-import { EmptyState } from '@/src/components/ui/EmptyState';
-import { Button } from '@/src/components/ui/Button';
-import { DownloadButton } from '@/src/components/ui/DownloadButton';
+import { Badge } from '@/components/ui/Badge';
+import { Card } from '@/components/ui/Card';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { Button } from '@/components/ui/Button';
+import { DownloadButton } from '@/components/ui/DownloadButton';
 import { DeleteClientButton } from './DeleteClientButton';
 
 interface ClientWithVersions {

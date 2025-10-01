@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/src/lib/supabase/client'
-import { UserRole } from '@/src/lib/types/database'
-import { Card } from '@/src/components/ui/Card'
-import { Button } from '@/src/components/ui/Button'
-import { Input } from '@/src/components/ui/Input'
+import { createClient } from '@/lib/supabase/client'
+import { UserRole } from '@/lib/types/database'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import { toast } from 'sonner'
 import { UserPlus, Search, Mail, User, X } from 'lucide-react'
 

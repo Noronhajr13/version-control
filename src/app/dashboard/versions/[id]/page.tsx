@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/src/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { ArrowLeft, Edit, ExternalLink, Calendar, Package, Users, FileCode, FileText, GitBranch } from 'lucide-react'
 
-import type { Database } from '@/src/lib/types/database'
+import type { Database } from '@/lib/types/database'
 type VersionWithRelations = Database['public']['Tables']['versions']['Row'] & {
   modules?: { name: string }
   cards?: Database['public']['Tables']['cards']['Row'][]
@@ -188,15 +188,15 @@ export default function VersionDetailsPage({ params }: { params: Promise<{ id: s
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Link do EXE (SharePoint)</dt>
                 <dd className="mt-1 text-sm">
-                  {(version as any).exe_path ? (
+                  {(version as any).file_path ? (
                     <a 
-                      href={(version as any).exe_path}
+                      href={(version as any).file_path}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 dark:text-blue-400 hover:underline flex items-center break-all"
                     >
                       <ExternalLink className="w-4 h-4 mr-1 flex-shrink-0" />
-                      {(version as any).exe_path}
+                      {(version as any).file_path}
                     </a>
                   ) : (
                     <span className="text-gray-400">Não especificado</span>

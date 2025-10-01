@@ -5,7 +5,7 @@ import { useBasicPermissions } from '@/contexts/AuthContextBasic'
 
 type UserRole = 'admin' | 'manager' | 'viewer'
 
-interface ProtectedComponentProps {
+interface SimpleProtectedProps {
   children: ReactNode
   role?: UserRole | UserRole[]
   fallback?: ReactNode
@@ -19,9 +19,10 @@ export function ProtectedComponent({
   fallback = null,
   adminOnly = false,
   managerOrAdmin = false
-}: ProtectedComponentProps) {
+}: SimpleProtectedProps) {
   const { role: userRole, isAdmin, isManager } = useBasicPermissions()
 
+  // Verificações simples
   let hasAccess = false
 
   if (adminOnly) {
@@ -32,12 +33,14 @@ export function ProtectedComponent({
     const allowedRoles = Array.isArray(role) ? role : [role]
     hasAccess = userRole ? allowedRoles.includes(userRole) : false
   } else {
+    // Se não especificar role, permite acesso
     hasAccess = true
   }
 
   return hasAccess ? <>{children}</> : <>{fallback}</>
 }
 
+// Componentes auxiliares simplificados
 export function CanCreate({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
   return (
     <ProtectedComponent managerOrAdmin fallback={fallback}>
@@ -70,22 +73,10 @@ export function AdminOnly({ children, fallback }: { children: ReactNode; fallbac
   )
 }
 
-// Aliases para compatibilidade
-export const DeleteAccess = CanDelete
-
-// Hook para compatibilidade
-export function useProtectedAction() {
-  const { isAdmin, canDelete } = useBasicPermissions()
-  
-  return {
-    canDelete: canDelete(),
-    isAdmin: isAdmin(),
-    executeProtectedAction: async (action: () => Promise<void>) => {
-      if (isAdmin()) {
-        await action()
-      } else {
-        throw new Error('Sem permissão para esta ação')
-      }
-    }
-  }
+export function ManagerOrAdmin({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
+  return (
+    <ProtectedComponent managerOrAdmin fallback={fallback}>
+      {children}
+    </ProtectedComponent>
+  )
 }

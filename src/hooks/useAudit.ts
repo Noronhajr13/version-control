@@ -14,7 +14,7 @@ import type {
   AuditFilters, 
   AuditPaginationParams,
   AuditPaginatedResponse
-} from '@/src/lib/types/audit'
+} from '@/lib/types/audit'
 
 // Hook para buscar logs de auditoria com filtros
 export function useAuditLogs(

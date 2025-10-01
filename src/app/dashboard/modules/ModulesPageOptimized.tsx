@@ -1,9 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus, Edit } from '@/src/components/ui/icons'
-import { TableSkeleton } from '@/src/components/ui/Skeletons'
-import { LazyErrorBoundary } from '@/src/components/ui/LazyErrorBoundary'
+import { Plus, Edit } from '@/components/ui/icons'
+import { TableSkeleton } from '@/components/ui/Skeletons'
+import { LazyErrorBoundary } from '@/components/ui/LazyErrorBoundary'
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 

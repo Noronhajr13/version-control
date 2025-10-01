@@ -1,10 +1,10 @@
 'use client'
 
-import { useAuth } from '@/src/contexts/AuthContext'
-import { useAuthFallback } from '@/src/hooks/useAuthFallback'
-import { createClient } from '@/src/lib/supabase/client'
+import { useAuth } from '@/contexts/AuthContextBasic'
+import { useAuthFallback } from '@/hooks/useAuthFallback'
+import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
-import { Card } from '@/src/components/ui/Card'
+import { Card } from '@/components/ui/Card'
 
 export default function DiagnosticPage() {
   const auth = useAuth()
@@ -108,9 +108,9 @@ export default function DiagnosticPage() {
         <div className="space-y-2 text-sm">
           <div>Loading: {auth.loading ? '✅ Carregando' : '❌ Carregado'}</div>
           <div>User: {auth.user ? `✅ ${auth.user.email}` : '❌ Não logado'}</div>
-          <div>Profile: {auth.userProfile ? `✅ ${auth.userProfile.role}` : '❌ Sem profile'}</div>
+          <div>Profile: {auth.role ? `✅ ${auth.role}` : '❌ Sem profile'}</div>
           <div>Role: {auth.role || '❌ Sem role'}</div>
-          <div>Permissions: {Object.keys(auth.permissions).length} permissões</div>
+          <div>Sistema: Simplificado (sem permissões complexas)</div>
         </div>
       </Card>
 

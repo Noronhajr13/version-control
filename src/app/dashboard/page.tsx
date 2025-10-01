@@ -1,12 +1,12 @@
 'use client'
 
 import { Package, Users, GitBranch, Folder } from 'lucide-react'
-import { useDashboardMetrics } from '@/src/lib/react-query/hooks/useDashboardMetrics'
-import { MetricCard } from '@/src/components/charts/MetricCard'
-import { VersionsByMonthChart } from '@/src/components/charts/VersionsByMonthChart'
-import { ModuleDistributionChart } from '@/src/components/charts/ModuleDistributionChart'
-import { ClientUsageChart } from '@/src/components/charts/ClientUsageChart'
-import { RecentVersions } from '@/src/components/charts/RecentVersions'
+import { useDashboardMetrics } from '@/lib/react-query/hooks/useDashboardMetrics'
+import { MetricCard } from '@/components/charts/MetricCard'
+import { VersionsByMonthChart } from '@/components/charts/VersionsByMonthChart'
+import { ModuleDistributionChart } from '@/components/charts/ModuleDistributionChart'
+import { ClientUsageChart } from '@/components/charts/ClientUsageChart'
+import { RecentVersions } from '@/components/charts/RecentVersions'
 
 export const dynamic = 'force-dynamic'
 
