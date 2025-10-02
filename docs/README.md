@@ -6,9 +6,11 @@ Este diretório contém toda a documentação do projeto organizada por categori
 
 ### 🔧 [Setup](./setup/)
 Documentação de configuração e instalação:
-- **[Database Setup](./setup/database-setup.md)** - Configuração completa do banco de dados Supabase
-- **[Email Confirmation](./setup/email-confirmation.md)** - Guia para confirmação de email
-- **[Workflow](./setup/workflow.md)** - Fluxo de trabalho com branches Git
+- **[Setup](./setup/)** - Configuração inicial do projeto
+  - [Database Setup](./setup/database-setup.md) - Configuração do Supabase
+  - [Email Confirmation](./setup/email-confirmation.md) - Setup de confirmação de email
+  - [Workflow](./setup/workflow.md) - Fluxo de trabalho Git
+  - [Gitignore Guide](./setup/gitignore-guide.md) - Configuração profissional do .gitignore
 
 ### 💻 [Development](./development/) 
 Documentação de desenvolvimento:

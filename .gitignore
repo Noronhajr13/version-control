@@ -39,3 +39,154 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ===================================
+# DEVELOPMENT TOOLS (Optional)
+# ===================================
+# Uncomment lines below to ignore dev tools in production builds
+# dev/scripts/test-*.js
+# dev/pages/
+# dev/components/debug/
+# dev/CLEANUP_LOG.md
+
+# Keep dev tools in development branch but exclude in production
+# Uncomment for production deployment:
+# dev/
+
+# ===================================
+# DATABASE & BACKUPS
+# ===================================
+# Database backups and dumps
+*.sql.backup
+*.dump
+*.sqlite
+*.db
+backup/
+dumps/
+database-backups/
+
+# Supabase local files
+supabase/.branches/
+supabase/.temp/
+.supabase/
+
+# ===================================
+# IDE & EDITORS
+# ===================================
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+# Keep team configurations
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+
+# Vim/Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# ===================================
+# LOGS & TEMPORARY FILES
+# ===================================
+# Application logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Temporary directories
+tmp/
+temp/
+cache/
+.cache/
+.tmp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ===================================
+# LOCAL DEVELOPMENT
+# ===================================
+# Environment backups
+.env.local.backup
+.env.backup
+.env.*.backup
+
+# Local development files
+.local/
+local/
+scratch/
+notes.md
+TODO.md
+NOTES.md
+
+# Test files (if not committed)
+test-results/
+coverage-reports/
+
+# ===================================
+# SECURITY & SENSITIVE FILES
+# ===================================
+# API keys and secrets
+secrets/
+.secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# SSL certificates
+*.crt
+*.cert
+ssl/
+
+# Authentication tokens
+.auth/
+auth.json
+tokens.json
+
+# ===================================
+# PROJECT SPECIFIC
+# ===================================
+# Version control app specific
+user-uploads/
+client-files/
+version-archives/
+
+# Large media files (if not using LFS)
+*.mov
+*.mp4
+*.avi
+uploads/
+
+# ===================================
+# PERFORMANCE & MONITORING
+# ===================================
+# Bundle analysis
+bundle-analysis.html
+.next-bundle-analysis/
+
+# Performance reports
+lighthouse-reports/
+performance/

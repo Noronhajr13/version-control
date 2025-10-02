@@ -1,0 +1,65 @@
+# 📋 .gitignore.example - Sistema de Controle de Versões
+
+Este arquivo serve como referência para configurações do .gitignore baseadas no ambiente.
+
+## 🔧 Para Desenvolvimento Local
+
+Mantenha as configurações padrão do .gitignore. A pasta `dev/` será commitada para facilitar debug e desenvolvimento.
+
+## 🚀 Para Produção/Deploy
+
+Descomente as seguintes linhas no .gitignore para excluir ferramentas de desenvolvimento:
+
+```gitignore
+# Descomentar para produção:
+dev/
+dev/scripts/test-*.js
+dev/pages/
+dev/components/debug/
+dev/CLEANUP_LOG.md
+```
+
+## 🛡️ Para Ambientes Sensíveis
+
+Adicione estas linhas adicionais se necessário:
+
+```gitignore
+# Arquivos de configuração sensível
+config/production.json
+config/staging.json
+.env.production.local
+
+# Logs de auditoria
+audit-logs/
+security-logs/
+
+# Certificados específicos
+certs/
+keys/
+```
+
+## 📝 Personalização por Desenvolvedor
+
+Cada desenvolvedor pode adicionar no .gitignore local (sem commitar):
+
+```gitignore
+# Arquivos pessoais do desenvolvedor
+my-notes.md
+personal-scripts/
+.personal/
+```
+
+## 🔍 Como Verificar
+
+Para ver quais arquivos estão sendo ignorados:
+```bash
+git status --ignored
+```
+
+Para verificar se um arquivo específico está sendo ignorado:
+```bash
+git check-ignore -v arquivo.txt
+```
+
+---
+*Última atualização: ${new Date().toLocaleDateString('pt-BR')}*
